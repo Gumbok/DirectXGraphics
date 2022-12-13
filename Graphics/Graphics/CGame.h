@@ -1,7 +1,9 @@
 #pragma once
 #include "WindowSettings.h"
+#include "DirectXSettings.h"
 
 #define WDS (*(CGame::Get()->GetWindowSettings()))
+#define DXS (*(CGame::Get()->GetDirectXSettings()))
 
 class CGame
 {
@@ -32,6 +34,7 @@ public:
 
 private:
 	SWindowSettings m_windowSettings;
+	SDirectXSettings m_directXSettings;
 
 	bool m_isRunning;
 
@@ -41,6 +44,7 @@ public:
 	void Finalize();
 
 	inline SWindowSettings* GetWindowSettings() { return &m_windowSettings; }
+	inline SDirectXSettings* GetDirectXSettings() { return &m_directXSettings; }
 
 private:
 	int InitApplication(HINSTANCE _hInstance);

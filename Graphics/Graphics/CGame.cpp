@@ -92,7 +92,7 @@ int CGame::InitApplication(HINSTANCE _hInstance)
 
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
-	wndClass.lpfnWndProc = &WndProc;
+	wndClass.lpfnWndProc = WndProc;
 	wndClass.hInstance = _hInstance;
 	wndClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wndClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 9);
@@ -123,7 +123,7 @@ int CGame::InitApplication(HINSTANCE _hInstance)
 		return -3;
 	}
 
-	ShowWindow(m_windowSettings.m_WindowHandle, 0);
+	ShowWindow(m_windowSettings.m_WindowHandle, 10);
 	UpdateWindow(m_windowSettings.m_WindowHandle);
 
 	return 0;

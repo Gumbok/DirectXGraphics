@@ -1,7 +1,7 @@
 #include "GraphicsPCH.h"
 #include "CGame.h"
 
-int WINAPI main(HINSTANCE _hInstance, HINSTANCE _prevHInstance, LPWSTR _cmdLineArgV, int _cmdLineArgC)
+int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _prevHInstance, LPWSTR _cmdLineArgV, int _cmdLineArgC)
 {
 	UNREFERENCED_PARAMETER(_prevHInstance);
 	UNREFERENCED_PARAMETER(_cmdLineArgV);

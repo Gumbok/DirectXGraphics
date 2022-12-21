@@ -278,6 +278,37 @@ int CGame::InitDirectX()
 
 int CGame::InitConstantBuffers()
 {
+	D3D11_BUFFER_DESC constantBuffer = { 0 };
+	constantBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constantBuffer.ByteWidth = sizeof(SStandardConstantBuffer);
+	constantBuffer.Usage = D3D11_USAGE_DEFAULT;
+
+	HRESULT hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_APPLICATION]);
+	FAILHR(-40);
+	hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_FRAME]);
+	FAILHR(-41);
+	hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_OBJECT]);
+	FAILHR(-42);
+
+	RECT clientRect;
+	GetClientRect(m_windowSettings.m_WindowHandle, &clientRect);
+	float clientHeight = clientRect.bottom - clientRect.top;
+	float clientWidth = clientRect.right - clientRect.left;
+
+
+	m_applicationConstantBuffer.m_matrix = XMMatrixPerspectiveFovLH(
+													XMConvertToRadians(60),
+													clientWidth / clientHeight,
+													0.1f,
+													100.0f);
+
+	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_APPLICATION],
+																0, nullptr, &m_applicationConstantBuffer, 0, 0);
+
+	m_camPos = XMFLOAT3(0, 2, -5);
+	m_camRot = XMFLOAT3(30, 0, 0);
+
+
 	return 0;
 }
 

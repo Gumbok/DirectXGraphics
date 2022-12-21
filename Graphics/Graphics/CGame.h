@@ -1,9 +1,13 @@
 #pragma once
 #include "WindowSettings.h"
 #include "DirectXSettings.h"
+#include "ConstantBuffer.h"
+#include "CEntity.h"
 
 #define WDS (*(CGame::Get()->GetWindowSettings()))
 #define DXS (*(CGame::Get()->GetDirectXSettings()))
+
+#define FAILHR(errorcode) if (FAILED(hr)) { return errorcode; }
 
 class CGame
 {
@@ -35,6 +39,11 @@ public:
 private:
 	SWindowSettings m_windowSettings;
 	SDirectXSettings m_directXSettings;
+	XMFLOAT3 m_camPos;
+	XMFLOAT3 m_camRot;
+
+	SStandardConstantBuffer m_applicationConstantBuffer;
+	SStandardConstantBuffer m_frameConstantBuffer;
 
 	bool m_isRunning;
 
@@ -53,5 +62,7 @@ private:
 
 	void Update(float _deltaTime);
 	void Render();
+
+
 };
 

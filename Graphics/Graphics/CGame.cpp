@@ -249,12 +249,12 @@ int CGame::InitDirectX()
 	D3D11_RASTERIZER_DESC rasterdesc;
 	ZeroMemory(&rasterdesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterdesc.AntialiasedLineEnable = false;
-	rasterdesc.FillMode = D3D11_FILL_SOLID;		// Komplette dreiecke zeigen , rumspielen!
+	rasterdesc.FillMode = D3D11_FILL_SOLID;		// Komplette Dreiecke zeigen, rumspielen!
 	rasterdesc.CullMode = D3D11_CULL_BACK;		// Rückseiten wegschneiden
 	rasterdesc.DepthBias = 0;
 	rasterdesc.DepthBiasClamp = 0.0f;
 	rasterdesc.DepthClipEnable = true;
-	rasterdesc.FrontCounterClockwise = false;		// Dreieckte im Uhrzeigersinn zeigen nach vorne
+	rasterdesc.FrontCounterClockwise = false;		// Dreiecke im Uhrzeigersinn zeigen nach vorne
 	rasterdesc.MultisampleEnable = false;
 	rasterdesc.ScissorEnable = false;
 	rasterdesc.SlopeScaledDepthBias = 0.0f;

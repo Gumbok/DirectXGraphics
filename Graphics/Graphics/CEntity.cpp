@@ -64,14 +64,14 @@ void CEntity::Render()
     unsigned int stride = sizeof(SVertexPosColor);
 
     // Input Assembler
-    DXS.m_deviceContext->IASetInputLayout();
+    DXS.m_deviceContext->IASetInputLayout(DXS.m_simpleInputLayout);
     DXS.m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     DXS.m_deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
     DXS.m_deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, offset);
 
     // Vertex Shader
     DXS.m_deviceContext->VSSetConstantBuffers(0, 3, DXS.m_constantBuffers);
-    DXS.m_deviceContext->VSSetShader(, nullptr, 0);
+    DXS.m_deviceContext->VSSetShader(DXS.m_simpleVertexShader, nullptr, 0);
 
     // Rasterizer
     DXS.m_deviceContext->RSSetState(DXS.m_rasterrizerState);
@@ -79,7 +79,7 @@ void CEntity::Render()
 
     // Pixel Shader
     //DXS.m_deviceContext->PSSetConstantBuffers(0, 1, );
-    DXS.m_deviceContext->PSSetShader(,nullptr, 0);
+    DXS.m_deviceContext->PSSetShader(DXS.m_simplePixelShader, nullptr, 0);
 
     // Output Merger
     DXS.m_deviceContext->OMSetRenderTargets(1, &DXS.m_renderTargetView, DXS.m_depthStencilView);
@@ -87,5 +87,8 @@ void CEntity::Render()
 
     // Objekt zeichnen
     DXS.m_deviceContext->DrawIndexed(m_indexCount, 0, 0);
+}
 
+void CEntity::CleanUp()
+{
 }

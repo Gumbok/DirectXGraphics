@@ -12,6 +12,7 @@ public:
 	virtual bool Initialize();					// Erzeugen, zb Texturen Laden
 	virtual void Update(float _deltaTime);		// Jeden Frame zur Berechnung
 	virtual void Render();						// Jeden Frame zum Anzeigen
+	virtual void CleanUp();
 
 	static void* operator new(size_t _size)
 	{

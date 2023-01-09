@@ -1,5 +1,6 @@
 #include "GraphicsPCH.h"
 #include "CGame.h"
+#include "CCube.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -42,6 +43,8 @@ int CGame::Initialize(HINSTANCE _hInstance)
 		MessageBox(nullptr, L"Failed to initialize Constant Buffers", L"Error", MB_OK);
 		return returnValue;
 	}
+
+	LoadLevel();
 
 	m_isRunning = true;
 
@@ -250,7 +253,7 @@ int CGame::InitDirectX()
 	ZeroMemory(&rasterdesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterdesc.AntialiasedLineEnable = false;
 	rasterdesc.FillMode = D3D11_FILL_SOLID;		// Komplette Dreiecke zeigen, rumspielen!
-	rasterdesc.CullMode = D3D11_CULL_BACK;		// Rückseiten wegschneiden
+	rasterdesc.CullMode = D3D11_CULL_NONE;		// Rückseiten wegschneiden
 	rasterdesc.DepthBias = 0;
 	rasterdesc.DepthBiasClamp = 0.0f;
 	rasterdesc.DepthClipEnable = true;
@@ -262,7 +265,7 @@ int CGame::InitDirectX()
 	hr = m_directXSettings.m_device->CreateRasterizerState(&rasterdesc, &m_directXSettings.m_rasterrizerState);
 	if (FAILED(hr))
 	{
-		return -36;
+		return -16;
 	}
 
 	m_directXSettings.m_viewPort.Width = clientWidth;
@@ -305,19 +308,122 @@ int CGame::InitConstantBuffers()
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_APPLICATION],
 																0, nullptr, &m_applicationConstantBuffer, 0, 0);
 
-	m_camPos = XMFLOAT3(0, 2, -5);
-	m_camRot = XMFLOAT3(30, 0, 0);
+	m_camPos = XMFLOAT3(0, 0, -5);
+	m_camRot = XMFLOAT3(0, 0, 0);
 
 
 	return 0;
 }
 
+int CGame::LoadLevel()
+{
+	CTM.AddEntity(new CCube(XMFLOAT3(0,0,5)));
+
+	return 0;
+}
+
+int CGame::CreateSimpleShader()
+{
+	ID3DBlob* shaderBlob;
+
+#if _DEBUG
+	LPCWSTR compiledShaderName = L"SimpleVertexShader_d.cso";
+#else
+	LPCWSTR compiledShaderName = L"SimpleVertexShader.cso";
+#endif
+
+	HRESULT hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-50);
+
+	hr = m_directXSettings.m_device->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(), nullptr, &m_directXSettings.m_simpleVertexShader);
+	FAILHR(-51);
+
+	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
+	{
+		{
+			"POSITION",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Position),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"COLOR",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Color),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		}
+	};
+
+	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
+									_countof(vertexLayoutDesc),
+									shaderBlob->GetBufferPointer(),
+									shaderBlob->GetBufferSize(),
+									&m_directXSettings.m_simpleInputLayout);
+	FAILHR(-52);
+
+
+#if _DEBUG
+	compiledShaderName = L"SimplePixelShader_d.cso";
+#else
+	compiledShaderName = L"SimplePixelShader.cso";
+#endif
+	hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-53);
+
+	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
+														shaderBlob->GetBufferSize(),
+														nullptr,
+														&m_directXSettings.m_simplePixelShader);
+	FAILHR(-54);
+
+	return 0;
+}
+
+void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
+{
+	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView, 
+													_clearColor);
+	m_directXSettings.m_deviceContext->ClearDepthStencilView(m_directXSettings.m_depthStencilView, 
+													D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 
+														_clearDepth, 
+															_clearStencil);
+}
+
 void CGame::Update(float _deltaTime)
 {
+	m_contentManager.Update(_deltaTime);
 }
 
 void CGame::Render()
 {
+	// Hardware Check
+	assert(m_directXSettings.m_device);
+	assert(m_directXSettings.m_deviceContext);
+
+	// Backbuffer clear
+	ClearBackBuffer(Colors::Navy, 1.0f, 0);
+
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_camRot.x), 
+									XMConvertToRadians(m_camRot.y), 
+									XMConvertToRadians(m_camRot.z));
+
+	XMMATRIX position = XMMatrixTranslation(m_camPos.x, m_camPos.y, m_camPos.z);
+
+	m_frameConstantBuffer.m_matrix = XMMatrixInverse(nullptr, XMMatrixMultiply(rotation, position));
+	
+	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_FRAME],
+									0, nullptr, &m_frameConstantBuffer, 0, 0);
+
+	m_contentManager.Render();
+
+	m_directXSettings.m_swapChain->Present(1, 0);
 }
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam)

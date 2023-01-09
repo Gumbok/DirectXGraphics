@@ -30,6 +30,9 @@
     <ClCompile Include="CCube.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="CContentManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsPCH.h">
@@ -56,5 +59,16 @@
     <ClInclude Include="CCube.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="CContentManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="SimpleVertexShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="SimplePixelShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

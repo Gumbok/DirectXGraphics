@@ -29,4 +29,8 @@ struct SDirectXSettings
 
 	D3D11_VIEWPORT m_viewPort;
 	ID3D11Buffer* m_constantBuffers[NumConstantBuffers];
+
+	ID3D11VertexShader* m_simpleVertexShader;
+	ID3D11InputLayout* m_simpleInputLayout;
+	ID3D11PixelShader* m_simplePixelShader;
 };

@@ -47,6 +47,7 @@ private:
 
 	SStandardConstantBuffer m_applicationConstantBuffer;
 	SStandardConstantBuffer m_frameConstantBuffer;
+	SLightConstantBuffer m_lightConstantBuffer;
 
 	bool m_isRunning;
 

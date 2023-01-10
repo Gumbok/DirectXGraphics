@@ -1,6 +1,7 @@
 #include "GraphicsPCH.h"
 #include "CGame.h"
 #include "CCube.h"
+#include "COktaeder.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -181,39 +182,39 @@ int CGame::InitDirectX()
 
 	D3D_FEATURE_LEVEL featureLevel;
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr,
-									D3D_DRIVER_TYPE_HARDWARE,
-									nullptr,
-									createDeviceFlags,
-									featureLevels,
-									_countof(featureLevels),
-									D3D11_SDK_VERSION,
-									&swapChainDesc,
-									&m_directXSettings.m_swapChain,
-									&m_directXSettings.m_device,
-									&featureLevel,
-									&m_directXSettings.m_deviceContext);
+		D3D_DRIVER_TYPE_HARDWARE,
+		nullptr,
+		createDeviceFlags,
+		featureLevels,
+		_countof(featureLevels),
+		D3D11_SDK_VERSION,
+		&swapChainDesc,
+		&m_directXSettings.m_swapChain,
+		&m_directXSettings.m_device,
+		&featureLevel,
+		&m_directXSettings.m_deviceContext);
 
 	if (FAILED(hr))
 	{
 		return -10;
 	}
-	
+
 	ID3D11Texture2D* backbuffer;
-	hr = m_directXSettings.m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**) &backbuffer);
+	hr = m_directXSettings.m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
 	if (FAILED(hr))
 	{
 		return -11;
 	}
-	
+
 	hr = m_directXSettings.m_device->CreateRenderTargetView(backbuffer, nullptr, &m_directXSettings.m_renderTargetView);
 	if (FAILED(hr))
 	{
 		return -12;
 	}
-	
+
 	SafeRelease(backbuffer);
-	
-	D3D11_TEXTURE2D_DESC depthStencilViewDesc = {0};
+
+	D3D11_TEXTURE2D_DESC depthStencilViewDesc = { 0 };
 	depthStencilViewDesc.ArraySize = 1;
 	depthStencilViewDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilViewDesc.CPUAccessFlags = 0;
@@ -226,8 +227,8 @@ int CGame::InitDirectX()
 	depthStencilViewDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	hr = m_directXSettings.m_device->CreateTexture2D(&depthStencilViewDesc,
-													nullptr,
-													&m_directXSettings.m_depthStencilBuffer);
+		nullptr,
+		&m_directXSettings.m_depthStencilBuffer);
 
 	if (FAILED(hr))
 	{
@@ -235,8 +236,8 @@ int CGame::InitDirectX()
 	}
 
 	hr = m_directXSettings.m_device->CreateDepthStencilView(m_directXSettings.m_depthStencilBuffer,
-															nullptr, 
-												&m_directXSettings.m_depthStencilView);
+		nullptr,
+		&m_directXSettings.m_depthStencilView);
 
 	if (FAILED(hr))
 	{
@@ -260,7 +261,7 @@ int CGame::InitDirectX()
 	ZeroMemory(&rasterdesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterdesc.AntialiasedLineEnable = false;
 	rasterdesc.FillMode = D3D11_FILL_SOLID;		// Komplette Dreiecke zeigen, rumspielen!
-	rasterdesc.CullMode = D3D11_CULL_NONE;		// Rückseiten wegschneiden
+	rasterdesc.CullMode = D3D11_CULL_BACK;		// Rückseiten wegschneiden
 	rasterdesc.DepthBias = 0;
 	rasterdesc.DepthBiasClamp = 0.0f;
 	rasterdesc.DepthClipEnable = true;
@@ -300,6 +301,10 @@ int CGame::InitConstantBuffers()
 	hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_OBJECT]);
 	FAILHR(-42);
 
+	constantBuffer.ByteWidth = sizeof(SLightConstantBuffer);
+	hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_LIGHT]);
+	FAILHR(-43);
+
 	RECT clientRect;
 	GetClientRect(m_windowSettings.m_WindowHandle, &clientRect);
 	float clientHeight = clientRect.bottom - clientRect.top;
@@ -307,13 +312,13 @@ int CGame::InitConstantBuffers()
 
 
 	m_applicationConstantBuffer.m_matrix = XMMatrixPerspectiveFovLH(
-													XMConvertToRadians(60),
-													clientWidth / clientHeight,
-													0.1f,
-													100.0f);
+		XMConvertToRadians(60),
+		clientWidth / clientHeight,
+		0.1f,
+		100.0f);
 
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_APPLICATION],
-																0, nullptr, &m_applicationConstantBuffer, 0, 0);
+		0, nullptr, &m_applicationConstantBuffer, 0, 0);
 
 	m_camPos = XMFLOAT3(0, 2, -5);
 	m_camRot = XMFLOAT3(30, 0, 0);
@@ -324,7 +329,13 @@ int CGame::InitConstantBuffers()
 
 int CGame::LoadLevel()
 {
-	CTM.AddEntity(new CCube(XMFLOAT3(0,0,0)));
+	CTM.AddEntity(new CCube(XMFLOAT3(0, 0, 5)));
+
+	for (int i = 5; i >= 0; i--)
+	{
+		CTM.AddEntity(new COktaeder(XMFLOAT4(1, 1, 1, 1), XMFLOAT3(i - 2, 0, 0)));
+
+	}
 
 	return 0;
 }
@@ -358,6 +369,15 @@ int CGame::CreateSimpleShader()
 			0
 		},
 		{
+			"NORMAL",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Normal),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
 			"COLOR",						// Semantic - Identifikation im Shader
 			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
 			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
@@ -369,10 +389,10 @@ int CGame::CreateSimpleShader()
 	};
 
 	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
-									_countof(vertexLayoutDesc),
-									shaderBlob->GetBufferPointer(),
-									shaderBlob->GetBufferSize(),
-									&m_directXSettings.m_simpleInputLayout);
+		_countof(vertexLayoutDesc),
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		&m_directXSettings.m_simpleInputLayout);
 	FAILHR(-52);
 
 
@@ -385,9 +405,9 @@ int CGame::CreateSimpleShader()
 	FAILHR(-53);
 
 	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
-														shaderBlob->GetBufferSize(),
-														nullptr,
-														&m_directXSettings.m_simplePixelShader);
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&m_directXSettings.m_simplePixelShader);
 	FAILHR(-54);
 
 	return 0;
@@ -395,12 +415,12 @@ int CGame::CreateSimpleShader()
 
 void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
 {
-	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView, 
-													_clearColor);
-	m_directXSettings.m_deviceContext->ClearDepthStencilView(m_directXSettings.m_depthStencilView, 
-													D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 
-														_clearDepth, 
-															_clearStencil);
+	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView,
+		_clearColor);
+	m_directXSettings.m_deviceContext->ClearDepthStencilView(m_directXSettings.m_depthStencilView,
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+		_clearDepth,
+		_clearStencil);
 }
 
 void CGame::Update(float _deltaTime)
@@ -417,16 +437,25 @@ void CGame::Render()
 	// Backbuffer clear
 	ClearBackBuffer(Colors::Navy, 1.0f, 0);
 
-	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_camRot.x), 
-									XMConvertToRadians(m_camRot.y), 
-									XMConvertToRadians(m_camRot.z));
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_camRot.x),
+		XMConvertToRadians(m_camRot.y),
+		XMConvertToRadians(m_camRot.z));
 
 	XMMATRIX position = XMMatrixTranslation(m_camPos.x, m_camPos.y, m_camPos.z);
 
 	m_frameConstantBuffer.m_matrix = XMMatrixInverse(nullptr, XMMatrixMultiply(rotation, position));
-	
+
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_FRAME],
-									0, nullptr, &m_frameConstantBuffer, 0, 0);
+		0, nullptr, &m_frameConstantBuffer, 0, 0);
+
+	m_lightConstantBuffer.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1);
+	m_lightConstantBuffer.DiffuseColor = XMFLOAT4(0.8f, 0.8f, 0.8f, 1);
+	m_lightConstantBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
+	m_lightConstantBuffer.CameraPos = m_camPos;
+	m_lightConstantBuffer.LightDir = XMFLOAT3(0.2f, 0.2f, -1.0f);
+
+	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_LIGHT],
+		0, nullptr, &m_lightConstantBuffer, 0, 0);
 
 	m_contentManager.Render();
 
@@ -440,15 +469,15 @@ LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lpar
 
 	switch (_message)
 	{
-		case WM_PAINT:
-			hdc = BeginPaint(_hwnd, &ps);
-			EndPaint(_hwnd, &ps);
-			break;
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			break;
-		default:
-			return DefWindowProc(_hwnd, _message, _wparam, _lparam);
+	case WM_PAINT:
+		hdc = BeginPaint(_hwnd, &ps);
+		EndPaint(_hwnd, &ps);
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(_hwnd, _message, _wparam, _lparam);
 	}
 	return 0;
 }

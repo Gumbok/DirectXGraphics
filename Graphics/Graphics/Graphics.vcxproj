@@ -146,6 +146,7 @@
     <ClCompile Include="CCube.cpp" />
     <ClCompile Include="CEntity.cpp" />
     <ClCompile Include="CGame.cpp" />
+    <ClCompile Include="COktaeder.cpp" />
     <ClCompile Include="GraphicsPCH.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -154,6 +155,7 @@
     <ClInclude Include="CCube.h" />
     <ClInclude Include="CEntity.h" />
     <ClInclude Include="CGame.h" />
+    <ClInclude Include="COktaeder.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DirectXSettings.h" />
     <ClInclude Include="GraphicsPCH.h" />

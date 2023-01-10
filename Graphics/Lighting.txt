@@ -1,0 +1,13 @@
+Ambient Light
+Grundhelligkeit (XMLFOAT4)
+
+Diffuse Light
+Farbe (XMLFOAT4)
+LichtRichtung (XMLFOAT3)
+Oberflächenrichtung (XMLFOAT3)
+
+Specular Light
+Farbe (XMLFOAT4)
+LichtRichtung (XMLFOAT3)
+Oberflächenrichtung (XMLFOAT3)
+Kameraposition (XMLFOAT3)

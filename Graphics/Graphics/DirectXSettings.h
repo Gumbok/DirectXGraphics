@@ -5,8 +5,7 @@ enum CB_Type
 	CB_APPLICATION,			// Für Daten die sich nie ändern, zb CameraToScreen-Matrix
 	CB_FRAME,				// Für Daten die sich einmal pro Frame ändern, WorlfToCamera-Matrix
 	CB_OBJECT,				// Für Daten die sich bei jedem Objekt ändern, ObjectToWorld-Matrix
-	
-	
+	CB_LIGHT,				// Für Lichtberechnung
 	
 	NumConstantBuffers
 };

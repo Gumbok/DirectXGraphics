@@ -10,18 +10,16 @@ CCube::CCube(XMFLOAT3 _pos)
 	m_vertices = new SVertexPosColor[m_vertexCount];
 	m_indices = new WORD[m_indexCount];
 
-	XMFLOAT4 col = XMFLOAT4(0.4f,0.3f,0.5,1);
-
 	int i = 0;
-	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, -0.5f), col };	
-	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, -0.5f), col };
-	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, 0.5f), col };
-	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, 0.5f), col };
+	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(-0.5f, 0.5f, -0.5f),XMFLOAT4(0.4f,0.3f,0.5f,1) };
+	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT4(1.0f,0.0f,0.0f,1) };
+	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.0f,1.0f,0.0f,1) };
+	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT4(0.0f,0.0f,1.0f,1) };
 
-	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, -0.5f), col };
-	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, -0.5f), col };
-	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, 0.5f), col };
-	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f), col };
+	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT4(1.0f,0.0f,1.0f,1) };
+	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT4(0.0f,1.0f,1.0f,1) };
+	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT4(1.0f,1.0f,0.0f,1) };
+	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f),XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT4(1.0f,1.0f,1.0f,1) };
 
 	i = 0;
 	// oben
@@ -32,7 +30,7 @@ CCube::CCube(XMFLOAT3 _pos)
 	m_indices[i++] = 1;
 	m_indices[i++] = 3;
 	m_indices[i++] = 2;
-
+	
 	// vorne
 	m_indices[i++] = 4;
 	m_indices[i++] = 0;
@@ -65,8 +63,8 @@ CCube::CCube(XMFLOAT3 _pos)
 	m_indices[i++] = 3;
 	m_indices[i++] = 4;
 
-	m_indices[i++] = 7;
 	m_indices[i++] = 4;
+	m_indices[i++] = 3;
 	m_indices[i++] = 0;
 
 	// unten

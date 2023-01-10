@@ -10,8 +10,12 @@ struct SLightConstantBuffer
 	XMFLOAT4 AmbientColor;
 
 	XMFLOAT4 DiffuseColor;
-	XMFLOAT3 LightDir;
-
 	XMFLOAT4 SpecularColor;
+	
+	XMFLOAT3 LightDir;
+	float LightDirPadding;
+
 	XMFLOAT3 CameraPos;
+	float CameraPosPadding;
+
 };

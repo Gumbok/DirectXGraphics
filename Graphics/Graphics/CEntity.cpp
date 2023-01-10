@@ -82,7 +82,7 @@ void CEntity::Render()
     DXS.m_deviceContext->RSSetViewports(1, &DXS.m_viewPort);
 
     // Pixel Shader
-    //DXS.m_deviceContext->PSSetConstantBuffers(0, 1, );
+    DXS.m_deviceContext->PSSetConstantBuffers(0, 1, &DXS.m_constantBuffers[CB_LIGHT]);
     DXS.m_deviceContext->PSSetShader(DXS.m_simplePixelShader, nullptr, 0);
 
     // Output Merger

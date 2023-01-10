@@ -51,8 +51,12 @@ void CEntity::Render()
 {
     // Prepare Object to World Matrix
     XMMATRIX scale = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-    XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rotation.x), XMConvertToRadians(m_rotation.y), XMConvertToRadians(m_rotation.z));
-    XMMATRIX translation = XMMatrixTranslation(m_position. x, m_position.y, m_position.z);
+    XMMATRIX rotation = XMMatrixRotationRollPitchYaw(
+                                    XMConvertToRadians(m_rotation.x), 
+                                    XMConvertToRadians(m_rotation.y), 
+                                    XMConvertToRadians(m_rotation.z));
+    XMMATRIX translation = XMMatrixTranslation(m_position. x, 
+                        m_position.y, m_position.z);
 
     // Saufen, Rauchen, Taxifahren
     m_objectConstantBuffer.m_matrix = scale * rotation * translation;

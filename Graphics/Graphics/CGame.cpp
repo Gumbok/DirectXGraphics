@@ -44,6 +44,13 @@ int CGame::Initialize(HINSTANCE _hInstance)
 		return returnValue;
 	}
 
+	returnValue = CreateSimpleShader();
+	if (FAILED(returnValue))
+	{
+		MessageBox(nullptr, L"Could not create Simple shader", L"Error", MB_OK);
+		return returnValue;
+	}
+
 	LoadLevel();
 
 	m_isRunning = true;
@@ -308,8 +315,8 @@ int CGame::InitConstantBuffers()
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_APPLICATION],
 																0, nullptr, &m_applicationConstantBuffer, 0, 0);
 
-	m_camPos = XMFLOAT3(0, 0, -5);
-	m_camRot = XMFLOAT3(0, 0, 0);
+	m_camPos = XMFLOAT3(0, 2, -5);
+	m_camRot = XMFLOAT3(30, 0, 0);
 
 
 	return 0;
@@ -317,7 +324,7 @@ int CGame::InitConstantBuffers()
 
 int CGame::LoadLevel()
 {
-	CTM.AddEntity(new CCube(XMFLOAT3(0,0,5)));
+	CTM.AddEntity(new CCube(XMFLOAT3(0,0,0)));
 
 	return 0;
 }

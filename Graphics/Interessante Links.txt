@@ -1,0 +1,6 @@
+DirectX11 materials for further reading:
+https://www.3dgep.com/introduction-to-directx-11/#DirectX_Project
+
+Stencil Buffer Usage:
+https://www.ronja-tutorials.com/post/022-stencil-buffers/
+

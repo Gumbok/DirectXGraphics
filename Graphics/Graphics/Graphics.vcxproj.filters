@@ -21,19 +21,22 @@
     <ClCompile Include="GraphicsPCH.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="CGame.cpp">
+    <ClCompile Include="Game.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="CEntity.cpp">
+    <ClCompile Include="Entity.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="CCube.cpp">
+    <ClCompile Include="Cube.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="CContentManager.cpp">
+    <ClCompile Include="ContentManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="COktaeder.cpp">
+    <ClCompile Include="Oktaeder.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +44,7 @@
     <ClInclude Include="GraphicsPCH.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="CGame.h">
+    <ClInclude Include="Game.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="WindowSettings.h">
@@ -53,19 +56,22 @@
     <ClInclude Include="ConstantBuffer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="CEntity.h">
+    <ClInclude Include="Entity.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="VertexPosColor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="CCube.h">
+    <ClInclude Include="Cube.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="CContentManager.h">
+    <ClInclude Include="ContentManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="COktaeder.h">
+    <ClInclude Include="Oktaeder.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

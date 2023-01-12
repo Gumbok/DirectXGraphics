@@ -1,5 +1,5 @@
 #pragma once
-#include "CEntity.h"
+#include "Entity.h"
 class CCube : public CEntity
 {
 public:

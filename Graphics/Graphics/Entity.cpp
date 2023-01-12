@@ -1,6 +1,6 @@
 #include "GraphicsPCH.h"
-#include "CEntity.h"
-#include "CGame.h"
+#include "Entity.h"
+#include "Game.h"
 
 CEntity::CEntity(XMFLOAT3 _pos)
 {
@@ -15,6 +15,11 @@ CEntity::~CEntity()
 
 bool CEntity::Initialize()
 {
+    if (m_invalid)
+    {
+        return false;
+    }
+
     D3D11_BUFFER_DESC bufferDesc = { 0 };
     bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bufferDesc.ByteWidth = sizeof(SVertexPosColor) * m_vertexCount;
@@ -78,7 +83,7 @@ void CEntity::Render()
     DXS.m_deviceContext->VSSetShader(DXS.m_simpleVertexShader, nullptr, 0);
 
     // Rasterizer
-    DXS.m_deviceContext->RSSetState(DXS.m_rasterrizerState);
+    DXS.m_deviceContext->RSSetState(DXS.m_currentRasterrizerState);
     DXS.m_deviceContext->RSSetViewports(1, &DXS.m_viewPort);
 
     // Pixel Shader

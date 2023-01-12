@@ -1,5 +1,5 @@
 #include "GraphicsPCH.h"
-#include "CContentManager.h"
+#include "ContentManager.h"
 
 CContentManager::CContentManager()
 {

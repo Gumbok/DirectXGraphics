@@ -6,7 +6,7 @@
 class CEntity
 {
 public:
-	CEntity(XMFLOAT3 _pos = XMFLOAT3(0.0f, 0.0f, 0.0f));
+	CEntity(XMFLOAT3 _pos);
 	virtual ~CEntity();
 
 	virtual bool Initialize();					// Erzeugen, zb Texturen Laden
@@ -39,5 +39,6 @@ protected:
 	ID3D11Buffer* m_indexBuffer;
 
 	SStandardConstantBuffer m_objectConstantBuffer;
+	bool m_invalid = false;
 };
 

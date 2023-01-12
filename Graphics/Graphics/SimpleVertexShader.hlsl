@@ -25,6 +25,7 @@ struct VertexShaderOutput
 	float4 pos : SV_POSITION;
 	float3 normal : NORMAL;
 	float4 color : COLOR;
+	float4 posWorld : POSITION1;
 };
 
 
@@ -34,7 +35,8 @@ VertexShaderOutput SimpleVertexShader(VertexShaderInput _in)
 	matrix mvp = mul(projectionMatrix, mul(viewMatrix, worldMatrix));
 
 	o.pos = mul(mvp, float4(_in.pos, 1.0f));	// 1 für positionen, 0 für Richtungen
-	o.normal = mul(worldMatrix, float4(_in.pos, 0.0f));	// Lichtberechnung in Worldspace
+	o.posWorld = mul(worldMatrix, float4(_in.pos, 1.0f));
+	o.normal = mul(worldMatrix, float4(_in.normal, 0.0f));	// Lichtberechnung in Worldspace
 	o.color = _in.color;
 
 	return o;

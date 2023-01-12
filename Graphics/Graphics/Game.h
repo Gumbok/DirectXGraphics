@@ -2,8 +2,8 @@
 #include "WindowSettings.h"
 #include "DirectXSettings.h"
 #include "ConstantBuffer.h"
-#include "CEntity.h"
-#include "CContentManager.h"
+#include "Entity.h"
+#include "ContentManager.h"
 
 #define WDS (*(CGame::Get()->GetWindowSettings()))
 #define DXS (*(CGame::Get()->GetDirectXSettings()))
@@ -60,6 +60,8 @@ public:
 	inline SDirectXSettings* GetDirectXSettings() { return &m_directXSettings; }
 	inline CContentManager* GetContentManager() { return &m_contentManager; }
 
+	void SwitchRasterizerState();
+
 private:
 	int InitApplication(HINSTANCE _hInstance);
 	int InitDirectX();
@@ -72,6 +74,7 @@ private:
 
 	void Update(float _deltaTime);
 	void Render();
+
 
 };
 

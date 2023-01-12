@@ -24,7 +24,10 @@ struct SDirectXSettings
 	ID3D11Texture2D* m_depthStencilBuffer = nullptr;
 	ID3D11DepthStencilView* m_depthStencilView = nullptr;
 	ID3D11DepthStencilState* m_depthStencilState = nullptr;
-	ID3D11RasterizerState* m_rasterrizerState = nullptr;
+	ID3D11RasterizerState* m_rasterrizerStateSolid = nullptr;
+	ID3D11RasterizerState* m_rasterrizerStateWireframe = nullptr;
+
+	ID3D11RasterizerState* m_currentRasterrizerState = nullptr;
 
 	D3D11_VIEWPORT m_viewPort;
 	ID3D11Buffer* m_constantBuffers[NumConstantBuffers];

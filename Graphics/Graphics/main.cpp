@@ -1,5 +1,5 @@
 #include "GraphicsPCH.h"
-#include "CGame.h"
+#include "Game.h"
 
 int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _prevHInstance, LPWSTR _cmdLineArgV, int _cmdLineArgC)
 {

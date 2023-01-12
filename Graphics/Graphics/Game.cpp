@@ -1,7 +1,8 @@
 #include "GraphicsPCH.h"
-#include "CGame.h"
-#include "CCube.h"
-#include "COktaeder.h"
+#include "Game.h"
+#include "Cube.h"
+#include "Oktaeder.h"
+#include "Sphere.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -94,6 +95,19 @@ int CGame::Run()
 
 void CGame::Finalize()
 {
+}
+
+void CGame::SwitchRasterizerState()
+{
+	if (m_directXSettings.m_currentRasterrizerState == m_directXSettings.m_rasterrizerStateSolid)
+	{
+		m_directXSettings.m_currentRasterrizerState = m_directXSettings.m_rasterrizerStateWireframe;
+	}
+	else
+	{
+		m_directXSettings.m_currentRasterrizerState = m_directXSettings.m_rasterrizerStateSolid;
+
+	}
 }
 
 int CGame::InitApplication(HINSTANCE _hInstance)
@@ -270,11 +284,19 @@ int CGame::InitDirectX()
 	rasterdesc.ScissorEnable = false;
 	rasterdesc.SlopeScaledDepthBias = 0.0f;
 
-	hr = m_directXSettings.m_device->CreateRasterizerState(&rasterdesc, &m_directXSettings.m_rasterrizerState);
+	hr = m_directXSettings.m_device->CreateRasterizerState(&rasterdesc, &m_directXSettings.m_rasterrizerStateSolid);
 	if (FAILED(hr))
 	{
 		return -16;
 	}
+
+	rasterdesc.FillMode = D3D11_FILL_WIREFRAME;
+	hr = m_directXSettings.m_device->CreateRasterizerState(&rasterdesc, &m_directXSettings.m_rasterrizerStateWireframe);
+	if (FAILED(hr))
+	{
+		return -17;
+	}
+	m_directXSettings.m_currentRasterrizerState = m_directXSettings.m_rasterrizerStateSolid;
 
 	m_directXSettings.m_viewPort.Width = clientWidth;
 	m_directXSettings.m_viewPort.Height = clientHeight;
@@ -320,8 +342,9 @@ int CGame::InitConstantBuffers()
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_APPLICATION],
 		0, nullptr, &m_applicationConstantBuffer, 0, 0);
 
-	m_camPos = XMFLOAT3(0, 5, -5);
-	m_camRot = XMFLOAT3(45, 0, 0);
+	m_camPos = XMFLOAT3(0, 0, -5);
+	//m_camPos = XMFLOAT3(0, 5, -5);
+	//m_camRot = XMFLOAT3(45, 0, 0);
 
 
 	return 0;
@@ -329,13 +352,15 @@ int CGame::InitConstantBuffers()
 
 int CGame::LoadLevel()
 {
-	CTM.AddEntity(new CCube(XMFLOAT3(0, 0, 5)));
+	//CTM.AddEntity(new CCube(XMFLOAT3(0, 0, 5)));
+	//
+	//for (int i = 5; i >= 0; i--)
+	//{
+	//	CTM.AddEntity(new COktaeder(XMFLOAT4(1, 1, 1, 1), XMFLOAT3(i - 2, 0, 0)));
+	//
+	//}
 
-	for (int i = 5; i >= 0; i--)
-	{
-		CTM.AddEntity(new COktaeder(XMFLOAT4(1, 1, 1, 1), XMFLOAT3(i - 2, 0, 0)));
-
-	}
+	CTM.AddEntity(new CSphere(XMFLOAT4(1,0,1, 1), 40, 3));
 
 	return 0;
 }
@@ -425,6 +450,14 @@ void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8
 
 void CGame::Update(float _deltaTime)
 {
+	static float f = 0;
+	f += _deltaTime;
+	if (f > 5)
+	{
+		SwitchRasterizerState();
+		f -= 5;
+	}
+
 	m_contentManager.Update(_deltaTime);
 }
 
@@ -452,7 +485,7 @@ void CGame::Render()
 	m_lightConstantBuffer.DiffuseColor = XMFLOAT4(0.8f, 0.8f, 0.8f, 1);
 	m_lightConstantBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
 	m_lightConstantBuffer.CameraPos = m_camPos;
-	m_lightConstantBuffer.LightDir = XMFLOAT3(0.1f, -1.0f, 0.2f );
+	m_lightConstantBuffer.LightDir = XMFLOAT3(0.1f, -1.0f, -1.0f );
 
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_LIGHT],
 		0, nullptr, &m_lightConstantBuffer, 0, 0);

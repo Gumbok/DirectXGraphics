@@ -28,7 +28,7 @@ float4 SimplePixelShader(PixelShaderInput _in) : SV_TARGET
 
 	float3 diffuse = saturate(_in.color.xyz 
 								* DiffuseColor.xyz
-								* dot(normalize(LightDir), normalize(_in.normal)) 
+								* dot(normalize(-LightDir), normalize(_in.normal)) 
 								* DiffuseColor.a);
 
 	float3 specular = float3(0,0,0);

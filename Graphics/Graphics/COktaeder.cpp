@@ -14,8 +14,8 @@ COktaeder::COktaeder(XMFLOAT4 _col, XMFLOAT3 _pos)
 	m_vertices[i++] = { XMFLOAT3(0.0f, 0.5f, 0.0f),XMFLOAT3(0.0f, 0.5f, 0.0f), _col };
 	
 	m_vertices[i++] = { XMFLOAT3(0.0f, 0.0f, 0.5f),XMFLOAT3(0.0f, 0.0f, 0.5f), _col };
-	m_vertices[i++] = { XMFLOAT3(0.5f, 0.0f, 0.0f),XMFLOAT3(0.5f, 0.0f, 0.0f),		_col };
-	m_vertices[i++] = { XMFLOAT3(0.0f, 0.0f, -0.5f),XMFLOAT3(0.0f, 0.0f, -0.5f),	_col };
+	m_vertices[i++] = { XMFLOAT3(0.5f, 0.0f, 0.0f),XMFLOAT3(0.5f, 0.0f, 0.0f), _col };
+	m_vertices[i++] = { XMFLOAT3(0.0f, 0.0f, -0.5f),XMFLOAT3(0.0f, 0.0f, -0.5f), _col };
 	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.0f, 0.0f),XMFLOAT3(-0.5f, 0.0f, 0.0f),	_col };
 
 	m_vertices[i++] = { XMFLOAT3(0.0f, -0.5f, 0.0f),XMFLOAT3(0.0f, -0.5f, 0.0f), _col };

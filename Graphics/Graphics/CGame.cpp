@@ -320,8 +320,8 @@ int CGame::InitConstantBuffers()
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_APPLICATION],
 		0, nullptr, &m_applicationConstantBuffer, 0, 0);
 
-	m_camPos = XMFLOAT3(0, 2, -5);
-	m_camRot = XMFLOAT3(30, 0, 0);
+	m_camPos = XMFLOAT3(0, 5, -5);
+	m_camRot = XMFLOAT3(45, 0, 0);
 
 
 	return 0;
@@ -452,7 +452,7 @@ void CGame::Render()
 	m_lightConstantBuffer.DiffuseColor = XMFLOAT4(0.8f, 0.8f, 0.8f, 1);
 	m_lightConstantBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
 	m_lightConstantBuffer.CameraPos = m_camPos;
-	m_lightConstantBuffer.LightDir = XMFLOAT3(0.2f, 0.2f, -1.0f);
+	m_lightConstantBuffer.LightDir = XMFLOAT3(0.1f, -1.0f, 0.2f );
 
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_LIGHT],
 		0, nullptr, &m_lightConstantBuffer, 0, 0);

@@ -53,6 +53,12 @@ int CGame::Initialize(HINSTANCE _hInstance)
 		return returnValue;
 	}
 
+	returnValue = m_inputManager.InitDirectInput(_hInstance);
+	if (FAILED(returnValue))
+	{
+		MessageBox(nullptr, L"Could not create Direct Input", L"Error", MB_OK);
+		return returnValue;
+	}
 	LoadLevel();
 
 	m_isRunning = true;
@@ -352,15 +358,15 @@ int CGame::InitConstantBuffers()
 
 int CGame::LoadLevel()
 {
-	//CTM.AddEntity(new CCube(XMFLOAT3(0, 0, 5)));
-	//
-	//for (int i = 5; i >= 0; i--)
-	//{
-	//	CTM.AddEntity(new COktaeder(XMFLOAT4(1, 1, 1, 1), XMFLOAT3(i - 2, 0, 0)));
-	//
-	//}
+	CTM.AddEntity(new CCube(XMFLOAT3(0, 0, 5)));
+	
+	for (int i = 5; i >= 0; i--)
+	{
+		CTM.AddEntity(new COktaeder(XMFLOAT4(1, 1, 1, 1), XMFLOAT3(i - 2, 0, 0)));
+	
+	}
 
-	CTM.AddEntity(new CSphere(XMFLOAT4(1,0,1, 1), 40, 3));
+	CTM.AddEntity(new CSphere(XMFLOAT4(1,0,1, 1), 40, 60));
 
 	return 0;
 }
@@ -450,13 +456,47 @@ void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8
 
 void CGame::Update(float _deltaTime)
 {
-	static float f = 0;
-	f += _deltaTime;
-	if (f > 5)
+	m_inputManager.DetectInput();
+
+	if (m_inputManager.GetKeyDown(DIK_ESCAPE))
+	{
+		m_isRunning = false;
+	}
+
+	if (m_inputManager.GetKeyDown(DIK_U))
 	{
 		SwitchRasterizerState();
-		f -= 5;
 	}
+
+	XMFLOAT3 camMovement = XMFLOAT3(0, 0, 0);
+	if (m_inputManager.GetKey(DIK_W))
+	{
+		camMovement.z++;
+	}
+	if (m_inputManager.GetKey(DIK_S))
+	{
+		camMovement.z--;
+	}
+	if (m_inputManager.GetKey(DIK_A))
+	{
+		camMovement.x--;
+	}
+	if (m_inputManager.GetKey(DIK_D))
+	{
+		camMovement.x++;
+	}
+	if (m_inputManager.GetKey(DIK_Q))
+	{
+		camMovement.y--;
+	}
+	if (m_inputManager.GetKey(DIK_E))
+	{
+		camMovement.y++;
+	}
+	m_camPos = XMFLOAT3(m_camPos.x + camMovement.x * _deltaTime, 
+							m_camPos.y + camMovement.y * _deltaTime, 
+							m_camPos.z + camMovement.z * _deltaTime);
+
 
 	m_contentManager.Update(_deltaTime);
 }
@@ -485,7 +525,7 @@ void CGame::Render()
 	m_lightConstantBuffer.DiffuseColor = XMFLOAT4(0.8f, 0.8f, 0.8f, 1);
 	m_lightConstantBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
 	m_lightConstantBuffer.CameraPos = m_camPos;
-	m_lightConstantBuffer.LightDir = XMFLOAT3(0.1f, -1.0f, -1.0f );
+	m_lightConstantBuffer.LightDir = XMFLOAT3(0.1f, -1.0f, 1.0f );
 
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_LIGHT],
 		0, nullptr, &m_lightConstantBuffer, 0, 0);

@@ -4,10 +4,12 @@
 #include "ConstantBuffer.h"
 #include "Entity.h"
 #include "ContentManager.h"
+#include "InputManager.h"
 
 #define WDS (*(CGame::Get()->GetWindowSettings()))
 #define DXS (*(CGame::Get()->GetDirectXSettings()))
 #define CTM (*(CGame::Get()->GetContentManager()))
+#define IPM (*(CGame::Get()->GetInputManager()))
 
 #define FAILHR(errorcode) if (FAILED(hr)) { return errorcode; }
 
@@ -42,6 +44,7 @@ private:
 	SWindowSettings m_windowSettings;
 	SDirectXSettings m_directXSettings;
 	CContentManager m_contentManager;
+	CInputManager m_inputManager;
 	XMFLOAT3 m_camPos;
 	XMFLOAT3 m_camRot;
 
@@ -59,6 +62,7 @@ public:
 	inline SWindowSettings* GetWindowSettings() { return &m_windowSettings; }
 	inline SDirectXSettings* GetDirectXSettings() { return &m_directXSettings; }
 	inline CContentManager* GetContentManager() { return &m_contentManager; }
+	inline CInputManager* GetInputManager() { return &m_inputManager; }
 
 	void SwitchRasterizerState();
 

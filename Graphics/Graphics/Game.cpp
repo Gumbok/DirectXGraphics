@@ -3,6 +3,8 @@
 #include "Cube.h"
 #include "Oktaeder.h"
 #include "Sphere.h"
+#include "Helper.h"
+#include "TexturedPlane.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -50,6 +52,13 @@ int CGame::Initialize(HINSTANCE _hInstance)
 	if (FAILED(returnValue))
 	{
 		MessageBox(nullptr, L"Could not create Simple shader", L"Error", MB_OK);
+		return returnValue;
+	}
+
+	returnValue = CreateTexturedShader();
+	if (FAILED(returnValue))
+	{
+		MessageBox(nullptr, L"Could not create Textured shader", L"Error", MB_OK);
 		return returnValue;
 	}
 
@@ -358,6 +367,7 @@ int CGame::InitConstantBuffers()
 
 int CGame::LoadLevel()
 {
+	/*
 	CTM.AddEntity(new CCube(XMFLOAT3(0, 0, 5)));
 	
 	for (int i = 5; i >= 0; i--)
@@ -367,6 +377,9 @@ int CGame::LoadLevel()
 	}
 
 	CTM.AddEntity(new CSphere(XMFLOAT4(1,0,1, 1), 40, 60));
+
+	*/
+	CTM.AddEntity(new CTexturedPlane(L"DirectX-11-Rendering-Pipeline.png"));
 
 	return 0;
 }
@@ -444,6 +457,88 @@ int CGame::CreateSimpleShader()
 	return 0;
 }
 
+int CGame::CreateTexturedShader()
+{
+	ID3DBlob* shaderBlob;
+
+#if _DEBUG
+	LPCWSTR compiledShaderName = L"TexturedVertexShader_d.cso";
+#else
+	LPCWSTR compiledShaderName = L"TexturedVertexShader.cso";
+#endif
+
+	HRESULT hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-55);
+
+	hr = m_directXSettings.m_device->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(), nullptr, &m_directXSettings.m_texturedVertexShader);
+	FAILHR(-56);
+
+	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
+	{
+		{
+			"POSITION",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Position),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"NORMAL",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Normal),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"COLOR",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Color),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"TEXCOORD",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32_FLOAT,		// Float2
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, UV),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		}
+	};
+
+	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
+		_countof(vertexLayoutDesc),
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		&m_directXSettings.m_texturedInputLayout);
+	FAILHR(-57);
+
+
+#if _DEBUG
+	compiledShaderName = L"TexturedPixelShader_d.cso";
+#else
+	compiledShaderName = L"TexturedPixelShader.cso";
+#endif
+	hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-58);
+
+	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&m_directXSettings.m_texturedPixelShader);
+	FAILHR(-59);
+
+	return 0;
+}
+
 void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
 {
 	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView,
@@ -468,35 +563,57 @@ void CGame::Update(float _deltaTime)
 		SwitchRasterizerState();
 	}
 
+	XMVECTOR f = { 0, 0, 1,0 };
+	XMVECTOR r = { 1, 0, 0,0 };
+	XMVECTOR u = { 0, 1, 0,0 };
+
+	XMMATRIX m = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_camRot.x), 
+								XMConvertToRadians(m_camRot.y), 
+								XMConvertToRadians(m_camRot.z) );
+
+	f = XMVector3Transform(f, m);
+	r = XMVector3Transform(r, m);
+	u = XMVector3Transform(u, m);
+
+	XMFLOAT3 forward = XMFLOAT3(f.m128_f32[0], f.m128_f32[1], f.m128_f32[2]);
+	XMFLOAT3 right = XMFLOAT3(r.m128_f32[0], r.m128_f32[1], r.m128_f32[2]);
+	XMFLOAT3 up = XMFLOAT3(u.m128_f32[0], u.m128_f32[1], u.m128_f32[2]);
+	
 	XMFLOAT3 camMovement = XMFLOAT3(0, 0, 0);
+
 	if (m_inputManager.GetKey(DIK_W))
 	{
-		camMovement.z++;
+		camMovement = camMovement + forward;
 	}
 	if (m_inputManager.GetKey(DIK_S))
 	{
-		camMovement.z--;
+		camMovement = camMovement - forward;
 	}
 	if (m_inputManager.GetKey(DIK_A))
 	{
-		camMovement.x--;
+		camMovement = camMovement - right;
 	}
 	if (m_inputManager.GetKey(DIK_D))
 	{
-		camMovement.x++;
+		camMovement = camMovement + right;
 	}
 	if (m_inputManager.GetKey(DIK_Q))
 	{
-		camMovement.y--;
+		camMovement = camMovement - up;
 	}
 	if (m_inputManager.GetKey(DIK_E))
 	{
-		camMovement.y++;
+		camMovement = camMovement + up;
 	}
-	m_camPos = XMFLOAT3(m_camPos.x + camMovement.x * _deltaTime, 
-							m_camPos.y + camMovement.y * _deltaTime, 
-							m_camPos.z + camMovement.z * _deltaTime);
 
+	m_camPos = m_camPos + (camMovement * _deltaTime * MOVEMENT_SPEED);
+
+	if (m_inputManager.GetMouseKey(1))
+	{
+		XMFLOAT2 mouseDelta = m_inputManager.GetMouseMovement();
+		m_camRot.x += mouseDelta.y * _deltaTime * ROTATION_SPEED;
+		m_camRot.y += mouseDelta.x * _deltaTime * ROTATION_SPEED;
+	}
 
 	m_contentManager.Update(_deltaTime);
 }

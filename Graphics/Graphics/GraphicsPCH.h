@@ -22,6 +22,10 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "winmm.lib")
 
+#include <WICTextureLoader.h>
+#include <SpriteFont.h>
+#include <SpriteBatch.h>
+
 using namespace DirectX;
 
 template<typename T>

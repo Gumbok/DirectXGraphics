@@ -19,3 +19,7 @@
 /Graphics/.vs/
 /Graphics/Graphics/x64/
 /Graphics/packages
+/Graphics/Graphics/bin/Graphicsd.exe
+/Graphics/Graphics/bin/Graphicsd.pdb
+/Graphics/Graphics/bin/*.cso
+/Graphics/Graphics/inc/

@@ -5,6 +5,7 @@
 #include "Sphere.h"
 #include "Helper.h"
 #include "TexturedPlane.h"
+#include "TexturedSphere.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -243,19 +244,19 @@ int CGame::InitDirectX()
 
 	SafeRelease(backbuffer);
 
-	D3D11_TEXTURE2D_DESC depthStencilViewDesc = { 0 };
-	depthStencilViewDesc.ArraySize = 1;
-	depthStencilViewDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	depthStencilViewDesc.CPUAccessFlags = 0;
-	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;		// 24 bit Tiefe, 8 bit Stencil
-	depthStencilViewDesc.Height = clientHeight;
-	depthStencilViewDesc.Width = clientWidth;
-	depthStencilViewDesc.MipLevels = 1;
-	depthStencilViewDesc.SampleDesc.Count = 1;
-	depthStencilViewDesc.SampleDesc.Quality = 0;
-	depthStencilViewDesc.Usage = D3D11_USAGE_DEFAULT;
+	D3D11_TEXTURE2D_DESC depthStencilBufferDesc = { 0 };
+	depthStencilBufferDesc.ArraySize = 1;
+	depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilBufferDesc.CPUAccessFlags = 0;
+	depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;		// 24 bit Tiefe, 8 bit Stencil
+	depthStencilBufferDesc.Height = clientHeight;
+	depthStencilBufferDesc.Width = clientWidth;
+	depthStencilBufferDesc.MipLevels = 1;
+	depthStencilBufferDesc.SampleDesc.Count = 1;
+	depthStencilBufferDesc.SampleDesc.Quality = 0;
+	depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
-	hr = m_directXSettings.m_device->CreateTexture2D(&depthStencilViewDesc,
+	hr = m_directXSettings.m_device->CreateTexture2D(&depthStencilBufferDesc,
 		nullptr,
 		&m_directXSettings.m_depthStencilBuffer);
 
@@ -318,7 +319,7 @@ int CGame::InitDirectX()
 	m_directXSettings.m_viewPort.TopLeftX = 0.0f;
 	m_directXSettings.m_viewPort.TopLeftY = 0.0f;
 	m_directXSettings.m_viewPort.MinDepth = 0.0f;
-	m_directXSettings.m_viewPort.MaxDepth = 0.0f;
+	m_directXSettings.m_viewPort.MaxDepth = 1.0f;
 
 
 	return 0;
@@ -379,8 +380,11 @@ int CGame::LoadLevel()
 	CTM.AddEntity(new CSphere(XMFLOAT4(1,0,1, 1), 40, 60));
 
 	*/
-	CTM.AddEntity(new CTexturedPlane(L"DirectX-11-Rendering-Pipeline.png"));
-
+	//CTM.AddEntity(new CTexturedPlane(L"DirectX-11-Rendering-Pipeline.png"));
+	for (int i = 0; i < 20; i++)
+	{
+		CTM.AddEntity(new CTexturedSphere(L"world.png", 32, 24, XMFLOAT3(i - 9.5f, 0,0)));
+	}
 	return 0;
 }
 

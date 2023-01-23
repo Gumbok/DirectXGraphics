@@ -11,6 +11,6 @@ public:
 	virtual void Render() override;
 
 protected:
-	STextureData m_textureData;
+	STextureData* m_textureData;
 };
 

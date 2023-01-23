@@ -5,11 +5,13 @@
 #include "Entity.h"
 #include "ContentManager.h"
 #include "InputManager.h"
+#include "AssetManager.h"
 
 #define WDS (*(CGame::Get()->GetWindowSettings()))
 #define DXS (*(CGame::Get()->GetDirectXSettings()))
 #define CTM (*(CGame::Get()->GetContentManager()))
 #define IPM (*(CGame::Get()->GetInputManager()))
+#define ASM (*(CGame::Get()->GetAssetManager()))
 
 #define FAILHR(errorcode) if (FAILED(hr)) { return errorcode; }
 
@@ -45,6 +47,8 @@ private:
 	SDirectXSettings m_directXSettings;
 	CContentManager m_contentManager;
 	CInputManager m_inputManager;
+	CAssetManager m_assetManager;
+
 	XMFLOAT3 m_camPos;
 	XMFLOAT3 m_camRot;
 
@@ -63,6 +67,8 @@ public:
 	inline SDirectXSettings* GetDirectXSettings() { return &m_directXSettings; }
 	inline CContentManager* GetContentManager() { return &m_contentManager; }
 	inline CInputManager* GetInputManager() { return &m_inputManager; }
+	inline CAssetManager* GetAssetManager() { return &m_assetManager; }
+
 
 	void SwitchRasterizerState();
 

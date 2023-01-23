@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>\bin</OutDir>
+    <OutDir>.\bin</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>\bin</OutDir>
+    <OutDir>.\bin</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="ContentManager.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -154,8 +155,10 @@
     <ClCompile Include="TextureData.cpp" />
     <ClCompile Include="TexturedEntity.cpp" />
     <ClCompile Include="TexturedPlane.cpp" />
+    <ClCompile Include="TexturedSphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetManager.h" />
     <ClInclude Include="ContentManager.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Entity.h" />
@@ -170,6 +173,7 @@
     <ClInclude Include="TextureData.h" />
     <ClInclude Include="TexturedEntity.h" />
     <ClInclude Include="TexturedPlane.h" />
+    <ClInclude Include="TexturedSphere.h" />
     <ClInclude Include="VertexPosColor.h" />
     <ClInclude Include="WindowSettings.h" />
   </ItemGroup>

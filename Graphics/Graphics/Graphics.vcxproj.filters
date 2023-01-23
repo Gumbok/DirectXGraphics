@@ -69,6 +69,12 @@
     <ClCompile Include="TexturedPlane.cpp">
       <Filter>Quelldateien\Entities\Textured</Filter>
     </ClCompile>
+    <ClCompile Include="TexturedSphere.cpp">
+      <Filter>Quelldateien\Entities\Textured</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsPCH.h">
@@ -118,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="TexturedPlane.h">
       <Filter>Headerdateien\Entities\Textured</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedSphere.h">
+      <Filter>Headerdateien\Entities\Textured</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetManager.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

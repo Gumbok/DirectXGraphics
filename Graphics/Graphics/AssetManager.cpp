@@ -10,7 +10,7 @@ CAssetManager::~CAssetManager()
 {
 }
 
-STextureData* CAssetManager::LoadTexture(LPCWSTR _fileName)
+STextureData* CAssetManager::LoadTexture(LPCWSTR _fileName, D3D11_FILTER _filterMode)
 {
 	if (_fileName == nullptr)
 	{
@@ -35,7 +35,7 @@ STextureData* CAssetManager::LoadTexture(LPCWSTR _fileName)
 		ZeroMemory(&desc, sizeof(D3D11_SAMPLER_DESC));
 		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 		desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; // Lineare interpolation
+		desc.Filter = _filterMode; // Lineare interpolation
 		desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 		desc.MinLOD = 0;
 		desc.MaxLOD = D3D11_FLOAT32_MAX;

@@ -6,6 +6,7 @@
 #include "Helper.h"
 #include "TexturedPlane.h"
 #include "TexturedSphere.h"
+#include "Button2D.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -48,6 +49,8 @@ int CGame::Initialize(HINSTANCE _hInstance)
 		MessageBox(nullptr, L"Failed to initialize Constant Buffers", L"Error", MB_OK);
 		return returnValue;
 	}
+
+	CTM.Initialize();
 
 	returnValue = CreateSimpleShader();
 	if (FAILED(returnValue))
@@ -366,6 +369,11 @@ int CGame::InitConstantBuffers()
 	return 0;
 }
 
+void ClickTest(CButton2D* _caller)
+{
+	CTM.RemoveEntity(_caller);
+}
+
 int CGame::LoadLevel()
 {
 	/*
@@ -385,6 +393,9 @@ int CGame::LoadLevel()
 	{
 		CTM.AddEntity(new CTexturedSphere(L"world.png", 32, 24, XMFLOAT3(i - 9.5f, 0,0)));
 	}
+	CTM.AddEntity(new CButton2D(XMFLOAT2(0,0), L"Button.png", ClickTest));
+	
+	
 	return 0;
 }
 

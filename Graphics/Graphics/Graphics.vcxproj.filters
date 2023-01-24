@@ -31,6 +31,12 @@
     <Filter Include="Headerdateien\Entities\Simple">
       <UniqueIdentifier>{51f19248-6f98-44e1-a504-69c8b733bff6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\Entities\2D">
+      <UniqueIdentifier>{1384fd5a-fb24-4d85-8895-310c80c702ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Entities\2D">
+      <UniqueIdentifier>{4e483068-6220-4250-af26-712ec4b6fa52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,6 +80,18 @@
     </ClCompile>
     <ClCompile Include="AssetManager.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity2D.cpp">
+      <Filter>Quelldateien\Entities\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Cursor.cpp">
+      <Filter>Quelldateien\Entities\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Image2D.cpp">
+      <Filter>Quelldateien\Entities\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Button2D.cpp">
+      <Filter>Quelldateien\Entities\2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +148,18 @@
     </ClInclude>
     <ClInclude Include="AssetManager.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity2D.h">
+      <Filter>Headerdateien\Entities\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Image2D.h">
+      <Filter>Headerdateien\Entities\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Cursor.h">
+      <Filter>Headerdateien\Entities\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Button2D.h">
+      <Filter>Headerdateien\Entities\2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

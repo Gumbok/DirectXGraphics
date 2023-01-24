@@ -134,4 +134,15 @@ inline XMFLOAT4 Lerp(XMFLOAT4 _a, XMFLOAT4 _b, float _t)
 {
 	return _a + (_b - _a) * _t;
 }
-// Lerp
+
+inline bool PointInRect(XMFLOAT2 _pos, XMFLOAT2 _extends, XMFLOAT2 _point)
+{
+	return (_point.x >= _pos.x && _point.x <= _pos.x + _extends.x)
+		&& (_point.y >= _pos.y && _point.y <= _pos.y + _extends.y);
+}
+
+inline bool PointInRect(RECT _rect, XMFLOAT2 _point)
+{
+	return (_point.x >= _rect.left && _point.x <= _rect.right)
+		&& (_point.y >= _rect.top && _point.y <= _rect.bottom);
+}

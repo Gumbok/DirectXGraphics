@@ -35,6 +35,7 @@ STextureData* CAssetManager::LoadTexture(LPCWSTR _fileName, D3D11_FILTER _filter
 		ZeroMemory(&desc, sizeof(D3D11_SAMPLER_DESC));
 		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 		desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 		desc.Filter = _filterMode; // Lineare interpolation
 		desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 		desc.MinLOD = 0;

@@ -1,6 +1,7 @@
 #include "GraphicsPCH.h"
 #include "InputManager.h"
 #include "Game.h"
+#include "Helper.h"
 
 CInputManager::CInputManager()
 {
@@ -58,7 +59,7 @@ void CInputManager::DetectInput()
 	m_mouse->GetDeviceState(sizeof(m_currentMouseState), &m_currentMouseState);
 
 	m_mousePos = XMFLOAT2(m_mousePos.x + GetMouseMovement().x, m_mousePos.y + GetMouseMovement().y);
-	//m_mousePos = TODO: Mathehilfsfunktionen schreiben!
+	m_mousePos = Clamp(m_mousePos, XMFLOAT2(-20,-20), XMFLOAT2(WDS.m_WindowWidth, WDS.m_WindowHeigth));
 }
 
 void CInputManager::CleanUp()

@@ -7,6 +7,8 @@
 #include "TexturedPlane.h"
 #include "TexturedSphere.h"
 #include "Button2D.h"
+#include "Text2D.h"
+#include "Terrain.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -63,6 +65,13 @@ int CGame::Initialize(HINSTANCE _hInstance)
 	if (FAILED(returnValue))
 	{
 		MessageBox(nullptr, L"Could not create Textured shader", L"Error", MB_OK);
+		return returnValue;
+	}
+
+	returnValue = CreateSplatMapShader();
+	if (FAILED(returnValue))
+	{
+		MessageBox(nullptr, L"Could not create SplatMap shader", L"Error", MB_OK);
 		return returnValue;
 	}
 
@@ -389,11 +398,22 @@ int CGame::LoadLevel()
 
 	*/
 	//CTM.AddEntity(new CTexturedPlane(L"DirectX-11-Rendering-Pipeline.png"));
-	for (int i = 0; i < 20; i++)
-	{
-		CTM.AddEntity(new CTexturedSphere(L"world.png", 32, 24, XMFLOAT3(i - 9.5f, 0,0)));
-	}
-	CTM.AddEntity(new CButton2D(XMFLOAT2(0,0), L"Button.png", ClickTest));
+	//for (int i = 0; i < 20; i++)
+	//{
+	//	CTM.AddEntity(new CTexturedSphere(L"world.png", 32, 24, XMFLOAT3(i - 9.5f, 0,0)));
+	//}
+	//CTM.AddEntity(new CButton2D(XMFLOAT2(0,0), L"Button.png", ClickTest));
+	//CTM.AddEntity(new CText2D(L"Close Window", XMFLOAT2(40, 40)));
+
+	CTM.AddEntity(new CTerrain(L"Controll.jpg",
+		L"Grass.png",	// R
+		L"Stone.png",	// G
+		L"Sand.png",	// B
+		L"Water.png",	// A
+		L"Height.png",
+		100,
+		100,
+		XMFLOAT3(-2,-2,-2)));
 	
 	
 	return 0;
@@ -550,6 +570,88 @@ int CGame::CreateTexturedShader()
 		nullptr,
 		&m_directXSettings.m_texturedPixelShader);
 	FAILHR(-59);
+
+	return 0;
+}
+
+int CGame::CreateSplatMapShader()
+{
+	ID3DBlob* shaderBlob;
+
+#if _DEBUG
+	LPCWSTR compiledShaderName = L"SplatMapVertexShader_d.cso";
+#else
+	LPCWSTR compiledShaderName = L"SplatMapVertexShader.cso";
+#endif
+
+	HRESULT hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-60);
+
+	hr = m_directXSettings.m_device->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(), nullptr, &m_directXSettings.m_splatMapVertexShader);
+	FAILHR(-61);
+
+	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
+	{
+		{
+			"POSITION",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Position),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"NORMAL",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Normal),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"COLOR",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Color),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"TEXCOORD",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32_FLOAT,		// Float2
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, UV),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		}
+	};
+
+	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
+		_countof(vertexLayoutDesc),
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		&m_directXSettings.m_splatMapInputLayout);
+	FAILHR(-62);
+
+
+#if _DEBUG
+	compiledShaderName = L"SplatMapPixelShader_d.cso";
+#else
+	compiledShaderName = L"SplatMapPixelShader.cso";
+#endif
+	hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-63);
+
+	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&m_directXSettings.m_splatMapPixelShader);
+	FAILHR(-64);
 
 	return 0;
 }

@@ -37,6 +37,12 @@
     <Filter Include="Quelldateien\Entities\2D">
       <UniqueIdentifier>{4e483068-6220-4250-af26-712ec4b6fa52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\Entities\Splatmap">
+      <UniqueIdentifier>{8ba1f768-1d57-4c26-a8d6-d07ed92e60a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Entities\Splatmap">
+      <UniqueIdentifier>{81eb01ed-c12a-4a56-a6c9-72d77bac18f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,6 +98,15 @@
     </ClCompile>
     <ClCompile Include="Button2D.cpp">
       <Filter>Quelldateien\Entities\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Text2D.cpp">
+      <Filter>Quelldateien\Entities\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="SplatMapEntity.cpp">
+      <Filter>Quelldateien\Entities\Splatmap</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Quelldateien\Entities\Splatmap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +176,15 @@
     <ClInclude Include="Button2D.h">
       <Filter>Headerdateien\Entities\2D</Filter>
     </ClInclude>
+    <ClInclude Include="Text2D.h">
+      <Filter>Headerdateien\Entities\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Headerdateien\Entities\Splatmap</Filter>
+    </ClInclude>
+    <ClInclude Include="SplatMapEntity.h">
+      <Filter>Headerdateien\Entities\Splatmap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SimpleVertexShader.hlsl">
@@ -173,6 +197,12 @@
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
     <FxCompile Include="TexturedPixelShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="SplatMapVertexShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="SplatMapPixelShader.hlsl">
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
   </ItemGroup>

@@ -55,6 +55,7 @@ private:
 	SStandardConstantBuffer m_applicationConstantBuffer;
 	SStandardConstantBuffer m_frameConstantBuffer;
 	SLightConstantBuffer m_lightConstantBuffer;
+	STerrainConstantBuffer m_terrainConstantBuffer;
 
 	bool m_isRunning;
 
@@ -84,6 +85,7 @@ private:
 	int CreateSimpleShader();
 	int CreateTexturedShader();
 	int CreateSplatMapShader();
+	int CreateOSNMShader();
 
 	void ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil);
 

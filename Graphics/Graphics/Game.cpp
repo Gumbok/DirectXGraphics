@@ -9,6 +9,7 @@
 #include "Button2D.h"
 #include "Text2D.h"
 #include "Terrain.h"
+#include "OSNMCube.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -72,6 +73,13 @@ int CGame::Initialize(HINSTANCE _hInstance)
 	if (FAILED(returnValue))
 	{
 		MessageBox(nullptr, L"Could not create SplatMap shader", L"Error", MB_OK);
+		return returnValue;
+	}
+
+	returnValue = CreateOSNMShader();
+	if (FAILED(returnValue))
+	{
+		MessageBox(nullptr, L"Could not create OSNM shader", L"Error", MB_OK);
 		return returnValue;
 	}
 
@@ -355,6 +363,12 @@ int CGame::InitConstantBuffers()
 	hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_LIGHT]);
 	FAILHR(-43);
 
+	constantBuffer.ByteWidth = sizeof(STerrainConstantBuffer);
+	hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_TERRAIN]);
+	FAILHR(-44);
+
+	m_terrainConstantBuffer.m_TerrainST = XMFLOAT4(1, 1, 0, 0);
+
 	RECT clientRect;
 	GetClientRect(m_windowSettings.m_WindowHandle, &clientRect);
 	float clientHeight = clientRect.bottom - clientRect.top;
@@ -387,11 +401,11 @@ int CGame::LoadLevel()
 {
 	/*
 	CTM.AddEntity(new CCube(XMFLOAT3(0, 0, 5)));
-	
+
 	for (int i = 5; i >= 0; i--)
 	{
 		CTM.AddEntity(new COktaeder(XMFLOAT4(1, 1, 1, 1), XMFLOAT3(i - 2, 0, 0)));
-	
+
 	}
 
 	CTM.AddEntity(new CSphere(XMFLOAT4(1,0,1, 1), 40, 60));
@@ -413,9 +427,10 @@ int CGame::LoadLevel()
 		L"Height.png",
 		100,
 		100,
-		XMFLOAT3(-2,-2,-2)));
-	
-	
+		XMFLOAT3(-2, -2, -2)));
+
+	CTM.AddEntity(new COSNMCube(L"CubeTex.png", L"OSNMNormal.png", XMFLOAT3(0, 0, 0)));
+
 	return 0;
 }
 
@@ -656,6 +671,88 @@ int CGame::CreateSplatMapShader()
 	return 0;
 }
 
+int CGame::CreateOSNMShader()
+{
+	ID3DBlob* shaderBlob;
+
+#if _DEBUG
+	LPCWSTR compiledShaderName = L"OSNMVertexShader_d.cso";
+#else
+	LPCWSTR compiledShaderName = L"OSNMVertexShader.cso";
+#endif
+
+	HRESULT hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-65);
+
+	hr = m_directXSettings.m_device->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(), nullptr, &m_directXSettings.m_osnmVertexShader);
+	FAILHR(-66);
+
+	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
+	{
+		{
+			"POSITION",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Position),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"NORMAL",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Normal),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"COLOR",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Color),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"TEXCOORD",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32_FLOAT,		// Float2
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, UV),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		}
+	};
+
+	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
+		_countof(vertexLayoutDesc),
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		&m_directXSettings.m_osnmInputLayout);
+	FAILHR(-67);
+
+
+#if _DEBUG
+	compiledShaderName = L"OSNMPixelShader_d.cso";
+#else
+	compiledShaderName = L"OSNMPixelShader.cso";
+#endif
+	hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-68);
+
+	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&m_directXSettings.m_osnmPixelShader);
+	FAILHR(-69);
+
+	return 0;
+}
+
 void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
 {
 	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView,
@@ -684,9 +781,9 @@ void CGame::Update(float _deltaTime)
 	XMVECTOR r = { 1, 0, 0,0 };
 	XMVECTOR u = { 0, 1, 0,0 };
 
-	XMMATRIX m = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_camRot.x), 
-								XMConvertToRadians(m_camRot.y), 
-								XMConvertToRadians(m_camRot.z) );
+	XMMATRIX m = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_camRot.x),
+		XMConvertToRadians(m_camRot.y),
+		XMConvertToRadians(m_camRot.z));
 
 	f = XMVector3Transform(f, m);
 	r = XMVector3Transform(r, m);
@@ -695,7 +792,7 @@ void CGame::Update(float _deltaTime)
 	XMFLOAT3 forward = XMFLOAT3(f.m128_f32[0], f.m128_f32[1], f.m128_f32[2]);
 	XMFLOAT3 right = XMFLOAT3(r.m128_f32[0], r.m128_f32[1], r.m128_f32[2]);
 	XMFLOAT3 up = XMFLOAT3(u.m128_f32[0], u.m128_f32[1], u.m128_f32[2]);
-	
+
 	XMFLOAT3 camMovement = XMFLOAT3(0, 0, 0);
 
 	if (m_inputManager.GetKey(DIK_W))
@@ -733,6 +830,10 @@ void CGame::Update(float _deltaTime)
 	}
 
 	m_contentManager.Update(_deltaTime);
+
+	m_terrainConstantBuffer.m_TerrainST = XMFLOAT4(1, 1,
+		m_terrainConstantBuffer.m_TerrainST.z + _deltaTime * 0.01f,
+		m_terrainConstantBuffer.m_TerrainST.w + _deltaTime * 0.02f);
 }
 
 void CGame::Render()
@@ -759,10 +860,13 @@ void CGame::Render()
 	m_lightConstantBuffer.DiffuseColor = XMFLOAT4(0.8f, 0.8f, 0.8f, 1);
 	m_lightConstantBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
 	m_lightConstantBuffer.CameraPos = m_camPos;
-	m_lightConstantBuffer.LightDir = XMFLOAT3(0.1f, -1.0f, 1.0f );
+	m_lightConstantBuffer.LightDir = XMFLOAT3(0.1f, -1.0f, 1.0f);
 
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_LIGHT],
 		0, nullptr, &m_lightConstantBuffer, 0, 0);
+
+	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_TERRAIN],
+		0, nullptr, &m_terrainConstantBuffer, 0, 0);
 
 	m_contentManager.Render();
 

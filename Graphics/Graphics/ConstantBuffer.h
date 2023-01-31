@@ -17,5 +17,11 @@ struct SLightConstantBuffer
 
 	XMFLOAT3 CameraPos;
 	float CameraPosPadding;
+};
 
+struct STerrainConstantBuffer
+{
+	// S cale XY
+	// T ransform ZW
+	XMFLOAT4 m_TerrainST;
 };

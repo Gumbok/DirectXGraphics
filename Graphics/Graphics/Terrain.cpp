@@ -38,3 +38,8 @@ CTerrain::CTerrain(LPCWSTR _controllFileName, LPCWSTR _fileNameR, LPCWSTR _fileN
 CTerrain::~CTerrain()
 {
 }
+
+void CTerrain::Update(float _deltatime)
+{
+	//m_position.x += 0.1f * _deltatime;
+}

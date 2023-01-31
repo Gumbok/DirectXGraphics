@@ -43,6 +43,12 @@
     <Filter Include="Quelldateien\Entities\Splatmap">
       <UniqueIdentifier>{81eb01ed-c12a-4a56-a6c9-72d77bac18f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\Entities\OSNMEntity">
+      <UniqueIdentifier>{c7c13c66-4367-4fbe-8ae4-6e4b2fed3471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Entities\OSNMEntity">
+      <UniqueIdentifier>{d7f4baf1-09f0-4965-8439-83070881e3f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -107,6 +113,12 @@
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
       <Filter>Quelldateien\Entities\Splatmap</Filter>
+    </ClCompile>
+    <ClCompile Include="OSNMCube.cpp">
+      <Filter>Quelldateien\Entities\OSNMEntity</Filter>
+    </ClCompile>
+    <ClCompile Include="OSNMEntity.cpp">
+      <Filter>Quelldateien\Entities\OSNMEntity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +197,12 @@
     <ClInclude Include="SplatMapEntity.h">
       <Filter>Headerdateien\Entities\Splatmap</Filter>
     </ClInclude>
+    <ClInclude Include="OSNMCube.h">
+      <Filter>Headerdateien\Entities\OSNMEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="OSNMEntity.h">
+      <Filter>Headerdateien\Entities\OSNMEntity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SimpleVertexShader.hlsl">
@@ -203,6 +221,12 @@
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
     <FxCompile Include="SplatMapPixelShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="OSNMPixelShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="OSNMVertexShader.hlsl">
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
   </ItemGroup>

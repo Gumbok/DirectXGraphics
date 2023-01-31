@@ -20,6 +20,11 @@ cbuffer Light : register(b0)
 	float3 CameraPos;
 }
 
+cbuffer Terrain : register(b1)
+{
+	float4 terrainST;
+}
+
 struct PixelShaderInput
 {
 	float4 pos : SV_POSITION;
@@ -32,10 +37,10 @@ struct PixelShaderInput
 float4 SplatMapPixelShader(PixelShaderInput _in) : SV_TARGET
 {
 	float4 controllCol = controllTex.Sample(controllSampler, _in.uv);
-	float3 colR = RTex.Sample(RSampler, _in.posWorld.xz * 8).rgb;
-	float3 colG = GTex.Sample(GSampler, _in.posWorld.xz * 11).rgb;
-	float3 colB = BTex.Sample(BSampler, _in.posWorld.xz * 17).rgb;
-	float3 colA = ATex.Sample(ASampler, _in.posWorld.xz * 13).rgb;
+	float3 colR = RTex.Sample(RSampler, _in.posWorld.xz * terrainST.xy * 8  + terrainST.zw * 23).rgb;
+	float3 colG = GTex.Sample(GSampler, _in.posWorld.xz * terrainST.xy * 11 + terrainST.zw * 23).rgb;
+	float3 colB = BTex.Sample(BSampler, _in.posWorld.xz * terrainST.xy * 17 + terrainST.zw * 23).rgb;
+	float3 colA = ATex.Sample(ASampler, _in.posWorld.xz * terrainST.xy * 13 + terrainST.zw * 23).rgb;
 
 
 	float3 col = _in.color * (colR * controllCol.r * controllCol.r +

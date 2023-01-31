@@ -6,6 +6,7 @@ enum CB_Type
 	CB_FRAME,				// Für Daten die sich einmal pro Frame ändern, WorlfToCamera-Matrix
 	CB_OBJECT,				// Für Daten die sich bei jedem Objekt ändern, ObjectToWorld-Matrix
 	CB_LIGHT,				// Für Lichtberechnung
+	CB_TERRAIN,				// Für Terrainbespaßung, extra Daten für das Terrain
 	
 	NumConstantBuffers
 };
@@ -43,4 +44,8 @@ struct SDirectXSettings
 	ID3D11VertexShader* m_splatMapVertexShader;
 	ID3D11InputLayout* m_splatMapInputLayout;
 	ID3D11PixelShader* m_splatMapPixelShader;
+
+	ID3D11VertexShader* m_osnmVertexShader;
+	ID3D11InputLayout* m_osnmInputLayout;
+	ID3D11PixelShader* m_osnmPixelShader;
 };

@@ -40,28 +40,27 @@ COSNMCube::COSNMCube(LPCWSTR _fileName, LPCWSTR _normalMapFileName, XMFLOAT3 _po
 	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f),XMFLOAT3(0.0f, -1.0f, 0.0f), col, XMFLOAT2(0.5f + hp, 1 - hp) };
 	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, -1.0f, 0.0f), col, XMFLOAT2(1 - hp, 1 - hp) };
 
-	/// FIX REST
 	// vorne
 	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f), col, XMFLOAT2(0 + hp, 0.25f + hp) };
-	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f), col, XMFLOAT2(0 + hp, 0.5f - hp) };
-	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f), col, XMFLOAT2(0.25f - hp, 0.25f + hp) };
-	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f),col, XMFLOAT2(0.25f - hp, 0.5f - hp) };
+	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f), col, XMFLOAT2(0.25f - hp, 0.25f + hp) };
+	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f), col,  XMFLOAT2(0.25f - hp, 0.5f - hp) };
+	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f),col, XMFLOAT2(0 + hp, 0.5f - hp) };
 
 	// rechts
 	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), col, XMFLOAT2(0.25f + hp, 0 + hp) };
 	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), col, XMFLOAT2(0.25f + hp, 0.5f - hp) };
-	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), col, XMFLOAT2(0.5f - hp, 0 + hp) };
-	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), col, XMFLOAT2(0.5f - hp, 0.5f - hp) };
+	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), col, XMFLOAT2(0.5f - hp, 0.5f - hp) };
+	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), col, XMFLOAT2(0.5f - hp, 0 + hp) };
 
 	// hinten
-	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), col, XMFLOAT2(0 + hp,0 + hp) };
-	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f),XMFLOAT3(0.0f, 0.0f, 1.0f), col, XMFLOAT2(0 + hp, 0.25f - hp) };
-	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), col, XMFLOAT2(0.25f - hp, 0 + hp) };
+	m_vertices[i++] = { XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), col, XMFLOAT2(0.25f - hp, 0 + hp) };
+	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f),XMFLOAT3(0.0f, 0.0f, 1.0f), col, XMFLOAT2(0 + hp,0 + hp) };
+	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), col,  XMFLOAT2(0 + hp, 0.25f - hp) };
 	m_vertices[i++] = { XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), col, XMFLOAT2(0.25f - hp, 0.25f - hp) };
 
 	// links
-	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f),XMFLOAT3(-1.0f, 0.0f, 0.0f), col, XMFLOAT2(0 + hp, 0.5f + hp) };
-	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f), col, XMFLOAT2(0 + hp, 1 - hp) };
+	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f),XMFLOAT3(-1.0f, 0.0f, 0.0f), col, XMFLOAT2(0 + hp, 1 - hp) };
+	m_vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f), col,  XMFLOAT2(0 + hp, 0.5f + hp) };
 	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f),col, XMFLOAT2(0.5f - hp, 0.5f + hp) };
 	m_vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f), col, XMFLOAT2(0.5f - hp, 1 - hp) };
 

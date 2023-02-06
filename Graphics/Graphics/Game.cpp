@@ -10,6 +10,9 @@
 #include "Text2D.h"
 #include "Terrain.h"
 #include "OSNMCube.h"
+#include "TriplanarOktaeder.h"
+#include "TriplanarSphere.h"
+#include "MorphCube.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -80,6 +83,13 @@ int CGame::Initialize(HINSTANCE _hInstance)
 	if (FAILED(returnValue))
 	{
 		MessageBox(nullptr, L"Could not create OSNM shader", L"Error", MB_OK);
+		return returnValue;
+	}
+
+	returnValue = CreateTriplanarShader();
+	if (FAILED(returnValue))
+	{
+		MessageBox(nullptr, L"Could not create Triplanar shader", L"Error", MB_OK);
 		return returnValue;
 	}
 
@@ -165,7 +175,10 @@ int CGame::InitApplication(HINSTANCE _hInstance)
 	}
 
 	RECT windowRect = { 0,0, m_windowSettings.m_WindowWidth, m_windowSettings.m_WindowHeigth };
-	AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);
+	if (!m_windowSettings.m_Fullscreen)
+	{
+		AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);
+	}
 
 	m_windowSettings.m_WindowHandle = CreateWindowA(m_windowSettings.m_WindowClassNameShort,
 		m_windowSettings.m_WindowName,
@@ -429,7 +442,13 @@ int CGame::LoadLevel()
 		100,
 		XMFLOAT3(-2, -2, -2)));
 
-	CTM.AddEntity(new COSNMCube(L"CubeTex.png", L"OSNMNormal.png", XMFLOAT3(0, 0, 0)));
+	CTM.AddEntity(new COSNMCube(L"CubeTex.png", L"OSNMNormal.png", XMFLOAT3(4, 0, 0)));
+
+	CTM.AddEntity(new CTriplanarOktaeder(L"brick-wall.jpg", XMFLOAT3(-4, 0, 0)));
+	CTM.AddEntity(new CTriplanarSphere(L"brick-wall.jpg", 24, 24,XMFLOAT3(-4.5f, 0, 0)));
+	CTM.AddEntity(new CTriplanarOktaeder(L"brick-wall.jpg", XMFLOAT3(-5, 0, 0)));
+	CTM.AddEntity(new CTriplanarOktaeder(L"tiles.png", XMFLOAT3(0, 0, 0)));
+	CTM.AddEntity(new CMorphCube(10, XMFLOAT3(2, 0, 0)));
 
 	return 0;
 }
@@ -749,6 +768,70 @@ int CGame::CreateOSNMShader()
 		nullptr,
 		&m_directXSettings.m_osnmPixelShader);
 	FAILHR(-69);
+
+	return 0;
+}
+
+int CGame::CreateTriplanarShader()
+{
+	ID3DBlob* shaderBlob;
+
+#if _DEBUG
+	LPCWSTR compiledShaderName = L"TriplanarVertexShader_d.cso";
+#else
+	LPCWSTR compiledShaderName = L"TriplanarVertexShader.cso";
+#endif
+
+	HRESULT hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-70);
+
+	hr = m_directXSettings.m_device->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(), nullptr, &m_directXSettings.m_triplanarVertexShader);
+	FAILHR(-71);
+
+	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
+	{
+		{
+			"POSITION",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Position),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"NORMAL",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Normal),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		}
+	};
+
+	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
+		_countof(vertexLayoutDesc),
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		&m_directXSettings.m_triplanarInputLayout);
+	FAILHR(-72);
+
+
+#if _DEBUG
+	compiledShaderName = L"TriplanarPixelShader_d.cso";
+#else
+	compiledShaderName = L"TriplanarPixelShader.cso";
+#endif
+	hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-73);
+
+	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&m_directXSettings.m_triplanarPixelShader);
+	FAILHR(-74);
 
 	return 0;
 }

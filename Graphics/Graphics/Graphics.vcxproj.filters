@@ -43,11 +43,17 @@
     <Filter Include="Quelldateien\Entities\Splatmap">
       <UniqueIdentifier>{81eb01ed-c12a-4a56-a6c9-72d77bac18f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headerdateien\Entities\OSNMEntity">
+    <Filter Include="Headerdateien\Entities\Triplanar">
+      <UniqueIdentifier>{c632423e-81e1-48ac-b226-543a9994eb57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Entities\OSNM">
       <UniqueIdentifier>{c7c13c66-4367-4fbe-8ae4-6e4b2fed3471}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Quelldateien\Entities\OSNMEntity">
+    <Filter Include="Quelldateien\Entities\OSNM">
       <UniqueIdentifier>{d7f4baf1-09f0-4965-8439-83070881e3f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Entities\Triplanar">
+      <UniqueIdentifier>{f107d629-c591-496d-821d-03c9767b33db}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,10 +121,22 @@
       <Filter>Quelldateien\Entities\Splatmap</Filter>
     </ClCompile>
     <ClCompile Include="OSNMCube.cpp">
-      <Filter>Quelldateien\Entities\OSNMEntity</Filter>
+      <Filter>Quelldateien\Entities\OSNM</Filter>
     </ClCompile>
     <ClCompile Include="OSNMEntity.cpp">
-      <Filter>Quelldateien\Entities\OSNMEntity</Filter>
+      <Filter>Quelldateien\Entities\OSNM</Filter>
+    </ClCompile>
+    <ClCompile Include="TriplanarEntity.cpp">
+      <Filter>Quelldateien\Entities\Triplanar</Filter>
+    </ClCompile>
+    <ClCompile Include="TriplanarOktaeder.cpp">
+      <Filter>Quelldateien\Entities\Triplanar</Filter>
+    </ClCompile>
+    <ClCompile Include="TriplanarSphere.cpp">
+      <Filter>Quelldateien\Entities\Triplanar</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphCube.cpp">
+      <Filter>Quelldateien\Entities\Simple</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,10 +216,22 @@
       <Filter>Headerdateien\Entities\Splatmap</Filter>
     </ClInclude>
     <ClInclude Include="OSNMCube.h">
-      <Filter>Headerdateien\Entities\OSNMEntity</Filter>
+      <Filter>Headerdateien\Entities\OSNM</Filter>
     </ClInclude>
     <ClInclude Include="OSNMEntity.h">
-      <Filter>Headerdateien\Entities\OSNMEntity</Filter>
+      <Filter>Headerdateien\Entities\OSNM</Filter>
+    </ClInclude>
+    <ClInclude Include="TriplanarEntity.h">
+      <Filter>Headerdateien\Entities\Triplanar</Filter>
+    </ClInclude>
+    <ClInclude Include="TriplanarOktaeder.h">
+      <Filter>Headerdateien\Entities\Triplanar</Filter>
+    </ClInclude>
+    <ClInclude Include="TriplanarSphere.h">
+      <Filter>Headerdateien\Entities\Triplanar</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphCube.h">
+      <Filter>Headerdateien\Entities\Simple</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +257,12 @@
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
     <FxCompile Include="OSNMVertexShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="TriplanarPixelShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="TriplanarVertexShader.hlsl">
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
   </ItemGroup>

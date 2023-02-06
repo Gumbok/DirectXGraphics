@@ -152,6 +152,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Image2D.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="MorphCube.cpp" />
     <ClCompile Include="Oktaeder.cpp" />
     <ClCompile Include="GraphicsPCH.cpp" />
     <ClCompile Include="main.cpp" />
@@ -165,6 +166,9 @@
     <ClCompile Include="TexturedEntity.cpp" />
     <ClCompile Include="TexturedPlane.cpp" />
     <ClCompile Include="TexturedSphere.cpp" />
+    <ClCompile Include="TriplanarEntity.cpp" />
+    <ClCompile Include="TriplanarOktaeder.cpp" />
+    <ClCompile Include="TriplanarSphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager.h" />
@@ -178,6 +182,7 @@
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Image2D.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="MorphCube.h" />
     <ClInclude Include="Oktaeder.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DirectXSettings.h" />
@@ -192,6 +197,9 @@
     <ClInclude Include="TexturedEntity.h" />
     <ClInclude Include="TexturedPlane.h" />
     <ClInclude Include="TexturedSphere.h" />
+    <ClInclude Include="TriplanarEntity.h" />
+    <ClInclude Include="TriplanarOktaeder.h" />
+    <ClInclude Include="TriplanarSphere.h" />
     <ClInclude Include="VertexPosColor.h" />
     <ClInclude Include="WindowSettings.h" />
   </ItemGroup>
@@ -308,6 +316,34 @@
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_vs</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">inc/TexturedVertexShader.h</HeaderFileOutput>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">inc/TexturedVertexShader.h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)%(Filename)_d.cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="TriplanarPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TriplanarPixelShader</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TriplanarPixelShader</EntryPointName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_ps</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">inc/TriplanarPixelShader.h</HeaderFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_ps</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">inc/TriplanarPixelShader.h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)%(Filename)_d.cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="TriplanarVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TriplanarVertexShader</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TriplanarVertexShader</EntryPointName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_vs</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">inc/TriplanarVertexShader.h</HeaderFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_vs</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">inc/TriplanarVertexShader.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)%(Filename)_d.cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>

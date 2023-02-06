@@ -86,6 +86,7 @@ private:
 	int CreateTexturedShader();
 	int CreateSplatMapShader();
 	int CreateOSNMShader();
+	int CreateTriplanarShader();
 
 	void ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil);
 

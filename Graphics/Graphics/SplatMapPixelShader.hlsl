@@ -37,10 +37,29 @@ struct PixelShaderInput
 float4 SplatMapPixelShader(PixelShaderInput _in) : SV_TARGET
 {
 	float4 controllCol = controllTex.Sample(controllSampler, _in.uv);
-	float3 colR = RTex.Sample(RSampler, _in.posWorld.xz * terrainST.xy * 8  + terrainST.zw * 23).rgb;
-	float3 colG = GTex.Sample(GSampler, _in.posWorld.xz * terrainST.xy * 11 + terrainST.zw * 23).rgb;
-	float3 colB = BTex.Sample(BSampler, _in.posWorld.xz * terrainST.xy * 17 + terrainST.zw * 23).rgb;
-	float3 colA = ATex.Sample(ASampler, _in.posWorld.xz * terrainST.xy * 13 + terrainST.zw * 23).rgb;
+
+	float3 weight = abs(_in.normal);
+	weight = normalize(pow(weight, 10));
+
+	float3 colRxy = RTex.Sample(RSampler, _in.posWorld.xy * terrainST.xy * 8 + terrainST.zw * 23).rgb;
+	float3 colRxz = RTex.Sample(RSampler, _in.posWorld.xz * terrainST.xy * 8 + terrainST.zw * 23).rgb;
+	float3 colRyz = RTex.Sample(RSampler, _in.posWorld.yz * terrainST.xy * 8 + terrainST.zw * 23).rgb;
+	float3 colR = colRxz * weight.y + colRxy * weight.z + colRyz * weight.x;
+	
+	float3 colGxy = GTex.Sample(GSampler, _in.posWorld.xy * terrainST.xy * 11 + terrainST.zw * 23).rgb;
+	float3 colGxz = GTex.Sample(GSampler, _in.posWorld.xz * terrainST.xy * 11 + terrainST.zw * 23).rgb;
+	float3 colGyz = GTex.Sample(GSampler, _in.posWorld.yz * terrainST.xy * 11 + terrainST.zw * 23).rgb;
+	float3 colG = colGxz * weight.y + colGxy * weight.z + colGyz * weight.x;
+	
+	float3 colBxy = BTex.Sample(BSampler, _in.posWorld.xy * terrainST.xy * 17 + terrainST.zw * 23).rgb;
+	float3 colBxz = BTex.Sample(BSampler, _in.posWorld.xz * terrainST.xy * 17 + terrainST.zw * 23).rgb;
+	float3 colByz = BTex.Sample(BSampler, _in.posWorld.yz * terrainST.xy * 17 + terrainST.zw * 23).rgb;
+	float3 colB = colBxz * weight.y + colBxy * weight.z + colByz * weight.x;
+	
+	float3 colAxy = ATex.Sample(ASampler, _in.posWorld.xy * terrainST.xy * 13 + terrainST.zw * 23).rgb;
+	float3 colAxz = ATex.Sample(ASampler, _in.posWorld.xz * terrainST.xy * 13 + terrainST.zw * 23).rgb;
+	float3 colAyz = ATex.Sample(ASampler, _in.posWorld.yz * terrainST.xy * 13 + terrainST.zw * 23).rgb;
+	float3 colA = colAxz * weight.y + colAxy * weight.z + colAyz * weight.x;
 
 
 	float3 col = _in.color * (colR * controllCol.r * controllCol.r +

@@ -3,12 +3,14 @@ Texture2D RTex : register(t1);
 Texture2D GTex : register(t2);
 Texture2D BTex : register(t3);
 Texture2D ATex : register(t4);
+Texture2D NormalMap : register(t5);
 
 SamplerState controllSampler : register(s0);
 SamplerState RSampler : register(s1);
 SamplerState GSampler : register(s2);
 SamplerState BSampler : register(s3);
 SamplerState ASampler : register(s4);
+SamplerState NormalSampler : register(s5);
 
 cbuffer Light : register(b0)
 {
@@ -38,7 +40,7 @@ float4 SplatMapPixelShader(PixelShaderInput _in) : SV_TARGET
 {
 	float4 controllCol = controllTex.Sample(controllSampler, _in.uv);
 
-	float3 weight = abs(_in.normal);
+	float3 weight = abs(NormalMap.Sample(NormalSampler, _in.uv * 2 * terrainST.xy + terrainST.zw));
 	weight = normalize(pow(weight, 10));
 
 	float3 colRxy = RTex.Sample(RSampler, _in.posWorld.xy * terrainST.xy * 8 + terrainST.zw * 23).rgb;

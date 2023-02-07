@@ -1,8 +1,8 @@
 #include "GraphicsPCH.h"
 #include "Terrain.h"
 
-CTerrain::CTerrain(LPCWSTR _controllFileName, LPCWSTR _fileNameR, LPCWSTR _fileNameG, LPCWSTR _fileNameB, LPCWSTR _fileNameA, LPCWSTR _fileNameHeight, int _xSize, int _zSize, XMFLOAT3 _pos)
-	: CSplatMapEntity(_controllFileName, _fileNameR, _fileNameG, _fileNameB, _fileNameA, _fileNameHeight, _pos)
+CTerrain::CTerrain(LPCWSTR _controllFileName, LPCWSTR _fileNameR, LPCWSTR _fileNameG, LPCWSTR _fileNameB, LPCWSTR _fileNameA, LPCWSTR _fileNameHeight, LPCWSTR _controllNormal, int _xSize, int _zSize, XMFLOAT3 _pos)
+	: CSplatMapEntity(_controllFileName, _fileNameR, _fileNameG, _fileNameB, _fileNameA, _fileNameHeight, _controllNormal, _pos)
 {
 	m_vertexCount = (_xSize + 1) * (_zSize + 1);
 	m_indexCount = _xSize * _zSize * 2 * 3;

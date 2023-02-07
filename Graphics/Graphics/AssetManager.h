@@ -8,6 +8,8 @@ public:
 	CAssetManager();
 	~CAssetManager();
 
+	void CleanUp();
+
 	STextureData* LoadTexture(LPCWSTR _fileName, D3D11_FILTER _filterMode = D3D11_FILTER_MIN_MAG_MIP_LINEAR);
 
 private:

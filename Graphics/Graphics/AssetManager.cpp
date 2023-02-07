@@ -10,6 +10,21 @@ CAssetManager::~CAssetManager()
 {
 }
 
+void CAssetManager::CleanUp()
+{
+	for (auto itr : m_textures)
+	{
+		itr.second->m_texture->Release();
+		itr.second->m_shaderRessourceView->Release();
+		itr.second->m_textureSampler->Release();
+		//delete itr.second->m_shaderRessourceView;
+		//delete itr.second->m_texture;
+		//delete itr.second->m_textureSampler;
+	}
+	m_textures.clear();
+
+}
+
 STextureData* CAssetManager::LoadTexture(LPCWSTR _fileName, D3D11_FILTER _filterMode)
 {
 	if (_fileName == nullptr)

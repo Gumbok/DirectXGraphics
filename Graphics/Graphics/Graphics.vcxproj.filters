@@ -138,6 +138,9 @@
     <ClCompile Include="MorphCube.cpp">
       <Filter>Quelldateien\Entities\Simple</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Quelldateien\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsPCH.h">
@@ -233,6 +236,9 @@
     <ClInclude Include="MorphCube.h">
       <Filter>Headerdateien\Entities\Simple</Filter>
     </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Headerdateien\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SimpleVertexShader.hlsl">
@@ -263,6 +269,12 @@
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
     <FxCompile Include="TriplanarVertexShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyboxPixelShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyboxVertexShader.hlsl">
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
   </ItemGroup>

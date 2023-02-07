@@ -13,6 +13,7 @@ public:
 	void Initialize();
 	void Update(float _deltaTime);
 	void Render();
+	void Finalize();
 
 	bool AddEntity(CEntity* _entity);
 	bool RemoveEntity(CEntity* _entity);

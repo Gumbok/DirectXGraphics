@@ -63,6 +63,7 @@ CCube::CCube(XMFLOAT3 _pos)
 
 CCube::~CCube()
 {
+	
 }
 
 void CCube::Update(float _deltaTime)

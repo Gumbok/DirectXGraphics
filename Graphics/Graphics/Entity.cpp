@@ -11,6 +11,8 @@ CEntity::CEntity(XMFLOAT3 _pos)
 
 CEntity::~CEntity()
 {
+    delete m_indices;
+    delete m_vertices;
 }
 
 bool CEntity::Initialize()

@@ -13,6 +13,7 @@
 #include "TriplanarOktaeder.h"
 #include "TriplanarSphere.h"
 #include "MorphCube.h"
+#include "Skybox.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -93,6 +94,13 @@ int CGame::Initialize(HINSTANCE _hInstance)
 		return returnValue;
 	}
 
+	returnValue = CreateSkyboxShader();
+	if (FAILED(returnValue))
+	{
+		MessageBox(nullptr, L"Could not create Skybox shader", L"Error", MB_OK);
+		return returnValue;
+	}
+
 	returnValue = m_inputManager.InitDirectInput(_hInstance);
 	if (FAILED(returnValue))
 	{
@@ -141,6 +149,8 @@ int CGame::Run()
 
 void CGame::Finalize()
 {
+	CTM.Finalize();
+	ASM.CleanUp();
 }
 
 void CGame::SwitchRasterizerState()
@@ -420,10 +430,11 @@ int CGame::LoadLevel()
 		CTM.AddEntity(new COktaeder(XMFLOAT4(1, 1, 1, 1), XMFLOAT3(i - 2, 0, 0)));
 
 	}
-
-	CTM.AddEntity(new CSphere(XMFLOAT4(1,0,1, 1), 40, 60));
-
 	*/
+
+	//CTM.AddEntity(new CSphere(XMFLOAT4(1,0,1, 1), 40, 60));
+	CTM.AddEntity(new CTexturedSphere(L"world.png", 32, 24, XMFLOAT3(2, 0,2)));
+
 	//CTM.AddEntity(new CTexturedPlane(L"DirectX-11-Rendering-Pipeline.png"));
 	//for (int i = 0; i < 20; i++)
 	//{
@@ -438,6 +449,7 @@ int CGame::LoadLevel()
 		L"Sand.png",	// B
 		L"Water.png",	// A
 		L"Height.png",
+		L"normalmap.png",
 		100,
 		100,
 		XMFLOAT3(-2, -2, -2)));
@@ -448,6 +460,8 @@ int CGame::LoadLevel()
 	CTM.AddEntity(new CTriplanarSphere(L"brick-wall.jpg", 24, 24,XMFLOAT3(-4.5f, 0, 0)));
 	CTM.AddEntity(new CTriplanarOktaeder(L"brick-wall.jpg", XMFLOAT3(-5, 0, 0)));
 	CTM.AddEntity(new CTriplanarOktaeder(L"tiles.png", XMFLOAT3(0, 0, 0)));
+
+	CTM.AddEntity(new CSkybox(L"skybox.png", L"skybox2.png"));
 	CTM.AddEntity(new CMorphCube(10, XMFLOAT3(2, 0, 0)));
 
 	return 0;
@@ -836,6 +850,79 @@ int CGame::CreateTriplanarShader()
 	return 0;
 }
 
+int CGame::CreateSkyboxShader()
+{
+	ID3DBlob* shaderBlob;
+
+#if _DEBUG
+	LPCWSTR compiledShaderName = L"SkyboxVertexShader_d.cso";
+#else
+	LPCWSTR compiledShaderName = L"SkyboxVertexShader.cso";
+#endif
+
+	HRESULT hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-75);
+
+	hr = m_directXSettings.m_device->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(), nullptr, &m_directXSettings.m_skyboxVertexShader);
+	FAILHR(-76);
+
+	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
+	{
+		{
+			"POSITION",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Position),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"COLOR",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Color),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"TEXCOORD",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32_FLOAT,		// Float2
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, UV),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		}
+	};
+
+	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
+		_countof(vertexLayoutDesc),
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		&m_directXSettings.m_skyboxInputLayout);
+	FAILHR(-77);
+
+
+#if _DEBUG
+	compiledShaderName = L"SkyboxPixelShader_d.cso";
+#else
+	compiledShaderName = L"SkyboxPixelShader.cso";
+#endif
+	hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-78);
+
+	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&m_directXSettings.m_skyboxPixelShader);
+	FAILHR(-79);
+
+	return 0;
+}
+
 void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
 {
 	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView,
@@ -914,9 +1001,9 @@ void CGame::Update(float _deltaTime)
 
 	m_contentManager.Update(_deltaTime);
 
-	m_terrainConstantBuffer.m_TerrainST = XMFLOAT4(1, 1,
-		m_terrainConstantBuffer.m_TerrainST.z + _deltaTime * 0.01f,
-		m_terrainConstantBuffer.m_TerrainST.w + _deltaTime * 0.02f);
+	//m_terrainConstantBuffer.m_TerrainST = XMFLOxAT4(1, 1,
+	//	m_terrainConstantBuffer.m_TerrainST.z + _deltaTime * 0.01f,
+	//	m_terrainConstantBuffer.m_TerrainST.w + _deltaTime * 0.02f);
 }
 
 void CGame::Render()

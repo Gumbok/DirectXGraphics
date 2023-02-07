@@ -2,15 +2,16 @@
 #include "SplatMapEntity.h"
 #include "Game.h"
 
-CSplatMapEntity::CSplatMapEntity(LPCWSTR _controllFileName, LPCWSTR _fileNameR, LPCWSTR _fileNameG, LPCWSTR _fileNameB, LPCWSTR _fileNameA, LPCWSTR _fileNameHeight, XMFLOAT3 _pos)
-	: CEntity(_pos)
+CSplatMapEntity::CSplatMapEntity(LPCWSTR _controllFileName, LPCWSTR _fileNameR, LPCWSTR _fileNameG, LPCWSTR _fileNameB, LPCWSTR _fileNameA, LPCWSTR _fileNameHeight, LPCWSTR _controllNormal, XMFLOAT3 _pos)
+    : CEntity(_pos)
 {
-	m_controllTexture = ASM.LoadTexture(_controllFileName);
-	m_TextureR = ASM.LoadTexture(_fileNameR);
-	m_TextureG = ASM.LoadTexture(_fileNameG);
-	m_TextureB = ASM.LoadTexture(_fileNameB);
-	m_TextureA = ASM.LoadTexture(_fileNameA);
+    m_controllTexture = ASM.LoadTexture(_controllFileName);
+    m_TextureR = ASM.LoadTexture(_fileNameR);
+    m_TextureG = ASM.LoadTexture(_fileNameG);
+    m_TextureB = ASM.LoadTexture(_fileNameB);
+    m_TextureA = ASM.LoadTexture(_fileNameA);
     m_TextureHeight = ASM.LoadTexture(_fileNameHeight);
+    m_NormalMap = ASM.LoadTexture(_controllNormal);
 }
 
 CSplatMapEntity::~CSplatMapEntity()
@@ -63,11 +64,13 @@ void CSplatMapEntity::Render()
     DXS.m_deviceContext->PSSetSamplers(2, 1, &m_TextureG->m_textureSampler);
     DXS.m_deviceContext->PSSetSamplers(3, 1, &m_TextureB->m_textureSampler);
     DXS.m_deviceContext->PSSetSamplers(4, 1, &m_TextureA->m_textureSampler);
+    DXS.m_deviceContext->PSSetSamplers(5, 1, &m_NormalMap->m_textureSampler);
     DXS.m_deviceContext->PSSetShaderResources(0, 1, &m_controllTexture->m_shaderRessourceView);
     DXS.m_deviceContext->PSSetShaderResources(1, 1, &m_TextureR->m_shaderRessourceView);
     DXS.m_deviceContext->PSSetShaderResources(2, 1, &m_TextureG->m_shaderRessourceView);
     DXS.m_deviceContext->PSSetShaderResources(3, 1, &m_TextureB->m_shaderRessourceView);
     DXS.m_deviceContext->PSSetShaderResources(4, 1, &m_TextureA->m_shaderRessourceView);
+    DXS.m_deviceContext->PSSetShaderResources(5, 1, &m_NormalMap->m_shaderRessourceView);
 
     // Output Merger
     DXS.m_deviceContext->OMSetRenderTargets(1, &DXS.m_renderTargetView, DXS.m_depthStencilView);

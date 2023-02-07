@@ -6,7 +6,7 @@ class CSplatMapEntity :
     public CEntity
 {
 public:
-	CSplatMapEntity(LPCWSTR _controllFileName, LPCWSTR _fileNameR, LPCWSTR _fileNameG, LPCWSTR _fileNameB, LPCWSTR _fileNameA, LPCWSTR _fileNameHeight,XMFLOAT3 _pos);
+	CSplatMapEntity(LPCWSTR _controllFileName, LPCWSTR _fileNameR, LPCWSTR _fileNameG, LPCWSTR _fileNameB, LPCWSTR _fileNameA, LPCWSTR _fileNameHeight, LPCWSTR _controllNormal, XMFLOAT3 _pos);
 	virtual ~CSplatMapEntity();
 
 	virtual void Render() override;
@@ -18,6 +18,7 @@ protected:
 	STextureData* m_TextureB;
 	STextureData* m_TextureA;
 	STextureData* m_TextureHeight;
+	STextureData* m_NormalMap;
 
 };
 

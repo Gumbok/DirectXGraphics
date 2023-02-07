@@ -54,6 +54,22 @@ void CContentManager::Render()
 	m_spriteBatch->End();
 }
 
+void CContentManager::Finalize()
+{
+	for (auto itr : m_entities)
+	{
+		delete itr;
+	}
+	for (auto itr : m_entities2D)
+	{
+		delete itr;
+	}
+	m_entities.clear();
+	m_entities2D.clear();
+	m_entitiesToDelete.clear();
+	m_entities2DToDelete.clear();
+}
+
 bool CContentManager::AddEntity(CEntity* _entity)
 {
 	if (!_entity || ContainsEntity(_entity))

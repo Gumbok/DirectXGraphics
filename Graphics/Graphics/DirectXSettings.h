@@ -52,4 +52,8 @@ struct SDirectXSettings
 	ID3D11VertexShader* m_triplanarVertexShader;
 	ID3D11InputLayout* m_triplanarInputLayout;
 	ID3D11PixelShader* m_triplanarPixelShader;
+
+	ID3D11VertexShader* m_skyboxVertexShader;
+	ID3D11InputLayout* m_skyboxInputLayout;
+	ID3D11PixelShader* m_skyboxPixelShader;
 };

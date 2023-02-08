@@ -9,35 +9,75 @@ CInputManager::CInputManager()
 
 CInputManager::~CInputManager()
 {
-	
+
 }
 
+// This function initializes the DirectInput API for keyboard and mouse input
 int CInputManager::InitDirectInput(HINSTANCE _hInstance)
 {
-	HRESULT hr = DirectInput8Create(_hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*) & m_directInput, nullptr);
-	FAILHR(-100);
+	// Create an instance of DirectInput
+	HRESULT hr = DirectInput8Create(_hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&m_directInput, nullptr);
 
+	// Check if the DirectInput instance was created successfully
+	if (FAILED(hr))
+	{
+		// Return error code -100 if the instance creation failed
+		return -100;
+	}
+
+	// Create the keyboard device
 	hr = m_directInput->CreateDevice(GUID_SysKeyboard, &m_keyboard, nullptr);
-	FAILHR(-101);
+	if (FAILED(hr))
+	{
+		// Return error code -101 if the keyboard device creation failed
+		return -101;
+	}
 
+	// Create the mouse device
 	hr = m_directInput->CreateDevice(GUID_SysMouse, &m_mouse, nullptr);
-	FAILHR(-102);
+	if (FAILED(hr))
+	{
+		// Return error code -102 if the mouse device creation failed
+		return -102;
+	}
 
+	// Set the data format for the keyboard
 	hr = m_keyboard->SetDataFormat(&c_dfDIKeyboard);
-	FAILHR(-103);
+	if (FAILED(hr))
+	{
+		// Return error code -103 if setting the data format for the keyboard failed
+		return -103;
+	}
 
+	// Set the cooperative level for the keyboard
 	hr = m_keyboard->SetCooperativeLevel(WDS.m_WindowHandle, DISCL_EXCLUSIVE | DISCL_NOWINKEY | DISCL_FOREGROUND);
-	FAILHR(-104);
+	if (FAILED(hr))
+	{
+		// Return error code -104 if setting the cooperative level for the keyboard failed
+		return -104;
+	}
 
+	// Set the data format for the mouse
 	hr = m_mouse->SetDataFormat(&c_dfDIMouse);
-	FAILHR(-105);
+	if (FAILED(hr))
+	{
+		// Return error code -105 if setting the data format for the mouse failed
+		return -105;
+	}
 
+	// Set the cooperative level for the mouse
 	hr = m_mouse->SetCooperativeLevel(WDS.m_WindowHandle, DISCL_EXCLUSIVE | DISCL_NOWINKEY | DISCL_FOREGROUND);
-	FAILHR(-106);
+	if (FAILED(hr))
+	{
+		// Return error code -106 if setting the cooperative level for the mouse failed
+		return -106;
+	}
 
+	// Initialize the mouse position and keyboard/mouse state arrays
 	m_mousePos = XMFLOAT2(WDS.m_WindowWidth * 0.5f, WDS.m_WindowHeigth * 0.5f);
 	ZeroMemory(m_currentKeyboardState, sizeof(m_currentKeyboardState));
 	ZeroMemory(&m_currentMouseState, sizeof(m_currentMouseState));
+
 
 	ZeroMemory(m_lastKeyboardState, sizeof(m_lastKeyboardState));
 	ZeroMemory(&m_lastMouseState, sizeof(m_lastMouseState));

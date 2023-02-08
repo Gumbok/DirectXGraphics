@@ -3,10 +3,12 @@
 
 STextureData::STextureData()
 {
+
 }
 
 STextureData::STextureData(ID3D11Resource* _texture, ID3D11ShaderResourceView* _ressourceView, ID3D11SamplerState* _sampler)
 {
+	// Assign input parameters to member variables.
 	m_texture = _texture;
 	m_shaderRessourceView = _ressourceView;
 	m_textureSampler = _sampler;

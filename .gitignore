@@ -23,3 +23,6 @@
 /Graphics/Graphics/bin/Graphicsd.pdb
 /Graphics/Graphics/bin/*.cso
 /Graphics/Graphics/inc/
+/UnityShaders/.vs
+/UnityShaders/Library/
+/UnityShaders/Logs/

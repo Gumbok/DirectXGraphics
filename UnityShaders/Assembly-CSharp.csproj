@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ObjectShader\Shader\SimpleUnlit.shader" />
+    <None Include="Assets\ComputeShader\SimpleCompute.compute" />
     <None Include="Assets\ImageEffects\SinCity.shader" />
     <None Include="Assets\ObjectShader\Shader\TerrainMorph.shader" />
     <None Include="Assets\ImageEffects\SimpleImageEffect.shader" />

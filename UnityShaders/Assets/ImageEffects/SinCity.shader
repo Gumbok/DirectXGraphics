@@ -4,6 +4,9 @@ Shader "Hidden/SinCity"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Tester("Tester", Vector) = (0,0,0,0)
+        _SaturatationPow("Saturation Power", Int) = 5
+        _HueSelection("Hue Selection", Range(0,1)) = 0
+        _HueSpread("Hue Spread", Range(0,1)) = 0.1
     }
     SubShader
     {
@@ -30,54 +33,14 @@ Shader "Hidden/SinCity"
                 float4 vertex : SV_POSITION;
             };
 
-            float3 rgb_to_hsv_no_clip(float3 RGB)
+            float3 RGBToHSV(float3 c)
             {
-                float3 HSV;
-
-                float minChannel, maxChannel;
-                if (RGB.x > RGB.y) {
-                    maxChannel = RGB.x;
-                    minChannel = RGB.y;
-                }
-                else {
-                    maxChannel = RGB.y;
-                    minChannel = RGB.x;
-                }
-
-                if (RGB.z > maxChannel) maxChannel = RGB.z;
-                if (RGB.z < minChannel) minChannel = RGB.z;
-
-                HSV.xy = 0;
-                HSV.z = maxChannel;
-                float delta = maxChannel - minChannel;             //Delta RGB value
-                if (delta != 0) {                    // If gray, leave H  S at zero
-                    HSV.y = delta / HSV.z;
-                    float3 delRGB;
-                    delRGB = (HSV.zzz - RGB + 3 * delta) / (6.0 * delta);
-                    if (RGB.x == HSV.z) HSV.x = delRGB.z - delRGB.y;
-                    else if (RGB.y == HSV.z) HSV.x = (1.0 / 3.0) + delRGB.x - delRGB.z;
-                    else if (RGB.z == HSV.z) HSV.x = (2.0 / 3.0) + delRGB.y - delRGB.x;
-                }
-                return (HSV);
-            }
-
-            float3 hsv_to_rgb(float3 HSV)
-            {
-                float3 RGB = HSV.z;
-
-                float var_h = HSV.x * 6;
-                float var_i = floor(var_h);   // Or ... var_i = floor( var_h )
-                float var_1 = HSV.z * (1.0 - HSV.y);
-                float var_2 = HSV.z * (1.0 - HSV.y * (var_h - var_i));
-                float var_3 = HSV.z * (1.0 - HSV.y * (1 - (var_h - var_i)));
-                if (var_i == 0) { RGB = float3(HSV.z, var_3, var_1); }
-                else if (var_i == 1) { RGB = float3(var_2, HSV.z, var_1); }
-                else if (var_i == 2) { RGB = float3(var_1, HSV.z, var_3); }
-                else if (var_i == 3) { RGB = float3(var_1, var_2, HSV.z); }
-                else if (var_i == 4) { RGB = float3(var_3, var_1, HSV.z); }
-                else { RGB = float3(HSV.z, var_1, var_2); }
-
-                return (RGB);
+                float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+                float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+                float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+                float d = q.x - min(q.w, q.y);
+                float e = 1.0e-10;
+                return float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
             }
 
             v2f vert (appdata v)
@@ -90,22 +53,28 @@ Shader "Hidden/SinCity"
 
             sampler2D _MainTex;
             float4 _Tester;
+            int _SaturatationPow;
+            float _HueSelection;
+            float _HueSpread;
 
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
-                float3 hsv = rgb_to_hsv_no_clip(col.rgb);
+                float3 hsv = RGBToHSV(col.rgb);
                 // just invert the colors
                 float c = (col.r + col.g + col.b) / 3;
 
-                if (hsv.b > _Tester.g)
-                {
-                    return col;
-                }
-                else
-                {
-                    return fixed4(c,c,c,1);
-                }
+                float blend = max(hsv.g - _Tester.g, 0.0);
+
+                float hueBlend = max((_HueSelection - (hsv.r - _HueSpread)),0) *
+                    max((hsv.r + _HueSpread - _HueSelection),0) * 2;
+
+                blend = blend * hueBlend;
+
+                blend = pow(1-blend, _SaturatationPow);
+                blend = 1 - blend;
+
+                return col * (blend) + fixed4(c, c, c, 1) * (1 - blend);
             }
             ENDCG
         }
